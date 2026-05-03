@@ -192,12 +192,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--i);cursor
 <!-- CARD PREVIEW MODAL -->
 <div id="card-modal">
   <div class="card-modal-inner">
-    <div class="card-modal-title">📸 Seu cartão de perfil</div>
-    <canvas id="preview-canvas" width="540" height="300"></canvas>
-    <div class="card-modal-btns">
-      <button class="btn-download" onclick="downloadCard()">⬇️ Baixar imagem</button>
-      <button class="btn-modal-close" onclick="closeCardModal()">Fechar</button>
+    <div class="card-modal-title">📱 Seu story do Instagram</div>
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <canvas id="preview-canvas" width="405" height="720" style="border-radius:16px;max-width:100%;max-height:60vh;box-shadow:0 8px 32px rgba(0,0,0,.25)"></canvas>
     </div>
+    <p style="font-size:.78rem;color:#7a9099;text-align:center;margin-bottom:14px;font-family:'DM Mono',monospace">formato 9:16 · pronto pra postar no story</p>
+    <button class="btn-download" onclick="downloadCard()">
+      📲 Baixar e compartilhar no Instagram
+    </button>
+    <button class="btn-modal-close" style="margin-top:10px;width:100%" onclick="closeCardModal()">Fechar</button>
   </div>
 </div>
 
@@ -377,7 +380,7 @@ const Qs=[
   {tag:'🌙 situação real',txt:'São 23h da véspera da prova. Onde você está?',type:'c',opts:[{l:'A',e:'📅',t:'Montando cronograma — começo amanhã cedo',tr:'estrategista'},{l:'B',e:'🔥',t:'Estudando em pânico, com 7 abas abertas',tr:'guerreiro'},{l:'C',e:'😌',t:'Dormindo. A confiança faz parte do processo.',tr:'confiante'},{l:'D',e:'🎨',t:'Fazendo resumo colorido e caprichado',tr:'criativo'}]},
   {tag:'😈 seu vilão',txt:'Qual desses te tira do foco em 30 segundos?',type:'c',opts:[{l:'A',e:'📱',t:'Uma notificação. Só uma. Acabou.',tr:'criativo'},{l:'B',e:'🛏️',t:'A cama me olha e eu já sei que perdi',tr:'genio'},{l:'C',e:'😤',t:'A sensação de que não está perfeito o suficiente',tr:'perfeccionista'},{l:'D',e:'🐇',t:'Organizar ao invés de estudar de verdade',tr:'estrategista'}]},
   {tag:'💡 eureka!',txt:'Você entendeu algo difícil pela primeira vez. O que acontece?',type:'c',opts:[{l:'A',e:'🗣️',t:'Preciso explicar pra alguém AGORA',tr:'social'},{l:'B',e:'🎯',t:'Já calculo onde isso vai cair na prova',tr:'estrategista'},{l:'C',e:'⚡',t:'3 minutos de euforia irracional',tr:'relampago'},{l:'D',e:'😤',t:'Fico irritado — por que não aprendi antes?',tr:'genio'}]},
-  {tag:'⭐ pergunta decisiva',isDest:true,txt:'Qual é o seu objetivo agora?',type:'c',opts:[{l:'A',e:'🏛️',t:'Passar no IFES, CEFET ou instituto federal',d:'i',tr:'guerreiro'},{l:'B',e:'📝',t:'Me preparar pro ENEM e entrar numa federal',d:'e',tr:'estrategista'},{l:'C',e:'🎒',t:'Melhorar meu desempenho na escola — ENEM fica pra depois',d:'s',tr:'criativo'},{l:'D',e:'🎓',t:'Sobreviver (e prosperar) na faculdade',d:'fu',tr:'relampago'},{l:'E',e:'📋',t:'Já me formei — o foco agora é passar em concurso',d:'c',tr:'estrategista'}]},
+  {tag:'⭐ pergunta decisiva',isDest:true,txt:'Qual é o seu objetivo agora?',type:'c',opts:[{l:'A',e:'🏛️',t:'Passar no IFES, CEFET ou instituto federal',d:'i',tr:'guerreiro'},{l:'B',e:'📝',t:'Me preparar pro ENEM e entrar numa federal',d:'e',tr:'estrategista'},{l:'C',e:'🎒',t:'Melhorar meu desempenho na escola',d:'s',tr:'criativo'},{l:'D',e:'🎓',t:'Sobreviver (e prosperar) na faculdade',d:'fu',tr:'relampago'},{l:'E',e:'🌱',t:'Já me formei — quero me desenvolver e crescer pessoalmente',d:'c',tr:'estrategista'}]},
   {tag:'🦸 superpoder',txt:'Se você tivesse um superpoder de estudante, qual seria?',type:'c',opts:[{l:'A',e:'🧠',t:'Memorizar tudo na primeira leitura',tr:'relampago'},{l:'B',e:'⏰',t:'Nunca procrastinar — foco total',tr:'estrategista'},{l:'C',e:'🌀',t:'Entender qualquer explicação, por pior que seja',tr:'genio'},{l:'D',e:'🔋',t:'Estudar sem cansar por horas a fio',tr:'guerreiro'}]},
   {tag:'🔢 desafio',txt:'Prove que você veio pra jogar.',type:'ch'},
   {tag:'👥 como você estuda',txt:'Qual cenário te parece mais eficaz?',type:'c',opts:[{l:'A',e:'🌙',t:'Sozinho, de madrugada, no silêncio absoluto',tr:'criativo'},{l:'B',e:'👥',t:'Em grupo — a troca de ideias me faz aprender mais',tr:'social'},{l:'C',e:'⏱️',t:'Com timer e metas claras por sessão',tr:'estrategista'},{l:'D',e:'💥',t:'Intenso e concentrado quando o prazo aperta',tr:'maratonista'}]},
@@ -451,7 +454,7 @@ function shRe(){
       <div class="od">${d.ds}</div>
       <a href="${waLink}" target="_blank" class="bca" style="background:${d.bc}" onmouseover="this.style.background='${d.bh}'" onmouseout="this.style.background='${d.bc}'">${d.bt}</a>
       <div class="share-section">
-        <button class="bsh" onclick="openCardModal()">📸 Gerar cartão do perfil</button>
+        <button class="bsh" onclick="openCardModal()">📱 Gerar story para o Instagram</button>
         <button class="bsh" onclick="shr()">📤 Compartilhar resultado</button>
       </div>
     </div>
@@ -464,104 +467,170 @@ function shRe(){
 function drawCard(){
   const canvas=document.getElementById('preview-canvas');
   const ctx=canvas.getContext('2d');
-  const W=540,H=300;
+  // Real pixel dimensions: 1080x1920 (stories), displayed at 405x720 via CSS
+  const W=1080, H=1920;
   canvas.width=W; canvas.height=H;
   const arch=currentArch, lv=currentLv;
   if(!arch||!lv) return;
-  // Background
-  const grd=ctx.createLinearGradient(0,0,W,H);
-  grd.addColorStop(0,'#1e3040');
-  grd.addColorStop(1,'#2d4653');
-  ctx.fillStyle=grd;
-  ctx.fillRect(0,0,W,H);
-  // Accent circles (use globalAlpha instead of hex alpha)
-  ctx.globalAlpha=0.13;
-  ctx.fillStyle=arch.cor;
-  ctx.beginPath(); ctx.arc(W+60,H/2,180,0,Math.PI*2); ctx.fill();
-  ctx.globalAlpha=0.09;
-  ctx.beginPath(); ctx.arc(W+60,H/2,130,0,Math.PI*2); ctx.fill();
+
+  // ── BACKGROUND ──
+  const grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,'#0d1a22');
+  grd.addColorStop(0.5,'#1a2c35');
+  grd.addColorStop(1,'#0d1a22');
+  ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+  // Big decorative circle top-right
+  ctx.globalAlpha=0.18; ctx.fillStyle=arch.cor;
+  ctx.beginPath(); ctx.arc(W+120,-60,620,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=0.10;
+  ctx.beginPath(); ctx.arc(W+120,-60,820,0,Math.PI*2); ctx.fill();
+
+  // Bottom circle decoration
+  ctx.globalAlpha=0.12; ctx.fillStyle=arch.cor;
+  ctx.beginPath(); ctx.arc(-120,H+80,540,0,Math.PI*2); ctx.fill();
   ctx.globalAlpha=1;
-  // Left accent bar
-  ctx.fillStyle=arch.cor;
-  ctx.fillRect(0,0,4,H);
-  // Logo
+
+  // Diagonal stripe texture (subtle)
+  ctx.globalAlpha=0.04; ctx.strokeStyle=arch.cor; ctx.lineWidth=2;
+  for(let i=-H;i<W+H;i+=60){
+    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+H,H); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  // ── LEFT ACCENT BAR ──
+  const barGrd=ctx.createLinearGradient(0,0,0,H);
+  barGrd.addColorStop(0,arch.cor); barGrd.addColorStop(1,arch.cor+'44');
+  ctx.fillStyle=barGrd; ctx.fillRect(0,0,8,H);
+
+  // ── TOP: LOGO ──
   ctx.fillStyle='#1cba9f';
-  ctx.font='bold 11px sans-serif';
-  ctx.fillText('UM QUARTO',28,32);
-  // Profile badge
-  const archIdx=Object.keys(AR).indexOf(Object.keys(AR).find(k=>AR[k]===arch))+1;
-  ctx.globalAlpha=0.25; ctx.fillStyle=arch.cor;
-  roundRectFill(ctx,24,42,100,22,11);
-  ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
-  ctx.font='bold 9px sans-serif';
-  ctx.fillText('PERFIL '+archIdx+' DE 10',34,57);
-  // Icon
-  ctx.font='60px serif';
-  ctx.fillText(arch.ic,26,140);
-  // Name
-  ctx.fillStyle='#ffffff';
-  ctx.font='bold 26px sans-serif';
-  ctx.fillText(arch.nm,28,173);
-  // Teal word
-  ctx.fillStyle=arch.cor;
-  ctx.font='bold 22px sans-serif';
-  ctx.fillText(arch.tl,28,200);
-  // Tagline
-  ctx.fillStyle='rgba(255,255,255,0.45)';
-  ctx.font='10px monospace';
-  ctx.fillText(arch.tg,28,220);
-  // Traits
-  let tx=28;
-  arch.tr.slice(0,3).forEach(t=>{
-    ctx.font='9.5px sans-serif';
-    const tw=ctx.measureText(t).width;
-    const pw=tw+16;
-    ctx.globalAlpha=0.2; ctx.fillStyle=arch.cor;
-    roundRectFill(ctx,tx,248,pw,19,9);
-    ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
-    ctx.fillText(t,tx+8,261);
-    tx+=pw+7;
-  });
-  // Right: XP
-  ctx.textAlign='right';
-  ctx.fillStyle='rgba(255,255,255,0.9)';
-  ctx.font='bold 13px sans-serif';
-  ctx.fillText(lv.ic+' '+lv.n,W-28,48);
-  ctx.fillStyle=arch.cor;
-  ctx.font='bold 30px sans-serif';
-  ctx.fillText(xp+' XP',W-28,86);
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.font='9px monospace';
-  ctx.fillText('pontos acumulados',W-28,103);
-  // Divider
-  ctx.globalAlpha=0.12; ctx.strokeStyle='#fff'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(W-155,120); ctx.lineTo(W-28,120); ctx.stroke();
-  ctx.globalAlpha=1;
-  // Combo + conquistas
-  ctx.fillStyle='rgba(255,255,255,0.9)';
-  ctx.font='bold 20px sans-serif';
-  ctx.fillText(mC>0?'x'+mC:'—',W-95,155);
-  ctx.fillText(aE.length,W-28,155);
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.font='9px monospace';
-  ctx.fillText('maior combo',W-95,170);
-  ctx.fillText('conquistas',W-28,170);
-  // Watermark
+  ctx.font='bold 36px sans-serif';
   ctx.textAlign='left';
-  ctx.globalAlpha=0.22; ctx.fillStyle='#fff';
-  ctx.font='8px sans-serif';
-  ctx.fillText('umquarto.com.br  |  (27) 99288-6632',28,H-12);
-  ctx.textAlign='right';
-  ctx.fillText('Descubra tambem o seu perfil',W-28,H-12);
+  ctx.fillText('✦ UM QUARTO', 60, 110);
+
+  // Tag line under logo
+  ctx.fillStyle='rgba(255,255,255,0.3)';
+  ctx.font='26px sans-serif';
+  ctx.fillText('umquarto.com.br', 60, 155);
+
+  // ── PROFILE NUMBER BADGE ──
+  ctx.globalAlpha=0.22; ctx.fillStyle=arch.cor;
+  roundRectFill(ctx, 60, 195, 270, 54, 27);
+  ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
+  ctx.font='bold 26px sans-serif';
+  ctx.fillText('PERFIL '+( Object.keys(AR).indexOf(Object.keys(AR).find(k=>AR[k]===arch))+1 )+' DE 10  ★', 80, 231);
+
+  // ── BIG EMOJI ──
+  ctx.font='320px serif';
+  ctx.textAlign='center';
+  ctx.fillText(arch.ic, W/2, 730);
+
+  // ── ARCHETYPE NAME ──
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 96px sans-serif';
+  ctx.textAlign='center';
+  // Wrap long names
+  const nm=arch.nm, tl=arch.tl;
+  ctx.fillText(nm, W/2, 860);
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 84px sans-serif';
+  ctx.fillText(tl, W/2, 960);
+
+  // ── TAGLINE ──
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.font='34px monospace';
+  ctx.fillText(arch.tg, W/2, 1035);
+
+  // ── DIVIDER ──
+  ctx.globalAlpha=0.15; ctx.strokeStyle=arch.cor; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(80,1080); ctx.lineTo(W-80,1080); ctx.stroke();
+  ctx.globalAlpha=1;
+
+  // ── DESCRIPTION (word wrap) ──
+  ctx.fillStyle='rgba(255,255,255,0.72)';
+  ctx.font='38px sans-serif';
+  ctx.textAlign='center';
+  wrapText(ctx, arch.ds, W/2, 1140, W-160, 58);
+
+  // ── TRAITS PILLS ──
+  const traitY=1480;
+  ctx.textAlign='center';
+  let pillsTotal=0;
+  const pillTexts=arch.tr;
+  const pillWidths=pillTexts.map(t=>{ctx.font='32px sans-serif';return ctx.measureText(t).width+48});
+  pillsTotal=pillWidths.reduce((a,b)=>a+b+20,0);
+  let px2=(W-pillsTotal)/2;
+  pillTexts.forEach((t,i)=>{
+    const pw=pillWidths[i];
+    ctx.globalAlpha=0.2; ctx.fillStyle=arch.cor;
+    roundRectFill(ctx,px2,traitY-38,pw,54,27);
+    ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
+    ctx.font='bold 28px sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText(t,px2+24,traitY);
+    px2+=pw+20;
+  });
+  ctx.textAlign='center';
+
+  // ── STATS ROW ──
+  const statY=1620;
+  // XP
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 80px sans-serif';
+  ctx.fillText(xp, W/2-240, statY);
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='30px sans-serif';
+  ctx.fillText('XP', W/2-240, statY+42);
+
+  // Combo
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 80px sans-serif';
+  ctx.fillText(mC>0?'x'+mC:'—', W/2, statY);
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='30px sans-serif';
+  ctx.fillText('combo', W/2, statY+42);
+
+  // Conquistas
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 80px sans-serif';
+  ctx.fillText(aE.length, W/2+240, statY);
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='30px sans-serif';
+  ctx.fillText('conquistas', W/2+240, statY+42);
+
+  // ── LEVEL BADGE ──
+  ctx.globalAlpha=0.18; ctx.fillStyle=arch.cor;
+  roundRectFill(ctx, W/2-200, 1730, 400, 72, 36);
+  ctx.globalAlpha=1;
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='bold 38px sans-serif';
+  ctx.fillText(lv.ic+' '+lv.n, W/2, 1776);
+
+  // ── BOTTOM CTA ──
+  ctx.fillStyle='rgba(255,255,255,0.25)';
+  ctx.font='30px sans-serif';
+  ctx.fillText('Descubra seu perfil tambem:', W/2, 1840);
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 34px sans-serif';
+  ctx.fillText('umquarto.com.br', W/2, 1885);
+
   ctx.globalAlpha=1;
 }
-function roundRectFill(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
-  ctx.closePath();ctx.fill();
+
+function wrapText(ctx,text,x,y,maxW,lineH){
+  const words=text.split(' ');
+  let line='';
+  let cy=y;
+  for(let i=0;i<words.length;i++){
+    const test=line+words[i]+' ';
+    if(ctx.measureText(test).width>maxW&&i>0){
+      ctx.fillText(line.trim(),x,cy);
+      line=words[i]+' ';
+      cy+=lineH;
+    } else { line=test; }
+  }
+  ctx.fillText(line.trim(),x,cy);
 }
 
 function openCardModal(){
@@ -575,7 +644,7 @@ function closeCardModal(){document.getElementById('card-modal').classList.remove
 function downloadCard(){
   try {
     const canvas=document.getElementById('preview-canvas');
-    const name='meu-perfil-'+(currentArch?currentArch.nm.replace(/\s+/g,'-').toLowerCase():'umquarto')+'.png';
+    const name='umquarto-story-'+(currentArch?currentArch.nm.replace(/\s+/g,'-').toLowerCase():'perfil')+'.png';
     const dataURL=canvas.toDataURL('image/png');
     const link=document.createElement('a');
     link.download=name;
@@ -585,9 +654,12 @@ function downloadCard(){
     document.body.removeChild(link);
     sfx.a();
     const btn=document.querySelector('.btn-download');
-    if(btn){btn.textContent='✓ Baixando...';setTimeout(()=>btn.textContent='⬇️ Baixar imagem',2000);}
+    if(btn){
+      btn.textContent='✓ Salvo! Agora abra o Instagram e poste no Story 🚀';
+      setTimeout(()=>btn.textContent='📲 Baixar e compartilhar no Instagram',3000);
+    }
   } catch(e){
-    alert('Erro ao baixar. Tente clicar com botão direito na imagem e salvar.');
+    alert('Erro ao baixar. Tente pressionar e segurar na imagem para salvar.');
   }
 }
 
