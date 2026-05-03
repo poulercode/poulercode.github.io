@@ -4,674 +4,628 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Um Quarto — Descubra seu Perfil</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;overflow:hidden;}
-:root{
-  --teal:#1cba9f;--teal-mid:#17a88f;--teal-dim:rgba(28,186,159,0.12);
-  --teal-glow:rgba(28,186,159,0.35);--navy:#2d4653;--ink:#1a2c35;
-  --bg:#f2faf8;--surface:#ffffff;--border:rgba(45,70,83,0.1);
-  --border-teal:rgba(28,186,159,0.25);--gray:#7a9099;--gray-light:#d8e8e4;
-}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);cursor:none;user-select:none;}
-
-/* CURSOR */
-#cursor{position:fixed;z-index:9999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal-glow);transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;mix-blend-mode:multiply;}
-#cursor.big{width:32px;height:32px;opacity:.45;}
-
-/* DOTS BG */
-#dots-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;}
-#particles-canvas{position:fixed;inset:0;z-index:5;pointer-events:none;}
-
-/* SCREENS */
-.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .5s ease;}
-.screen.active{opacity:1;pointer-events:all;}
-
-/* FLASH */
-#flash{position:fixed;inset:0;z-index:500;background:var(--teal);opacity:0;pointer-events:none;transition:opacity .12s;}
-#flash.pop{opacity:.07;}
-
-/* ══ INTRO ══ */
-#screen-intro{background:linear-gradient(150deg,#ecf8f5 0%,#e0f2ee 60%,#f5fbfa 100%);}
-.intro-logo{position:absolute;top:28px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);}
-
-/* DOOR */
-.door-scene{width:200px;height:290px;position:relative;margin-bottom:48px;perspective:900px;}
-.d-wall{position:absolute;inset:0;border-radius:4px 4px 0 0;background:linear-gradient(175deg,#cfe0db,#bdd4cf);box-shadow:0 16px 60px rgba(45,70,83,.14),inset 3px 0 10px rgba(0,0,0,.05),inset -3px 0 10px rgba(0,0,0,.05);}
-.d-frame{position:absolute;top:14px;left:18px;right:18px;bottom:0;background:#bcccc8;border-radius:2px 2px 0 0;box-shadow:inset 0 3px 10px rgba(0,0,0,.1);}
-.d-room{position:absolute;top:14px;left:18px;right:18px;bottom:0;border-radius:2px 2px 0 0;overflow:hidden;background:radial-gradient(ellipse at 38% 55%,#c8f5ec 0%,#8de8d8 50%,#5ad4c4 100%);}
-.d-room::before{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(180deg,transparent 0%,rgba(28,130,110,.12) 100%);}
-.d-room::after{content:'';position:absolute;top:20%;left:25%;width:50%;height:60%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45) 0%,transparent 70%);}
-.d-floor-light{position:absolute;bottom:-3px;left:18px;right:18px;height:4px;background:linear-gradient(90deg,transparent 5%,rgba(28,186,159,.6) 30%,rgba(28,186,159,.8) 50%,rgba(28,186,159,.6) 70%,transparent 95%);filter:blur(2px);animation:flicker 3s ease-in-out infinite;}
-@keyframes flicker{0%,100%{opacity:.7}40%{opacity:1}70%{opacity:.85}}
-.d-panel-wrap{position:absolute;top:14px;left:18px;right:18px;bottom:0;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(.4,0,.1,1);}
-.d-panel-wrap.open{transform:perspective(900px) rotateY(-68deg);}
-.d-panel{position:absolute;inset:0;border-radius:2px 2px 0 0;background:linear-gradient(165deg,#eef7f4 0%,#d9ece7 50%,#cce4de 100%);box-shadow:2px 0 18px rgba(0,0,0,.13),inset -1px 0 4px rgba(255,255,255,.5);backface-visibility:hidden;}
-.d-panel::before{content:'';position:absolute;top:16px;left:10px;right:10px;height:88px;border:1.5px solid rgba(45,70,83,.1);border-radius:2px;}
-.d-panel::after{content:'';position:absolute;top:118px;left:10px;right:10px;bottom:0;border:1.5px solid rgba(45,70,83,.1);border-radius:2px 2px 0 0;}
-.d-knob{position:absolute;right:14px;top:52%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9ecfc5,#4a9e95);box-shadow:0 2px 6px rgba(0,0,0,.2);}
-.d-shadow{position:absolute;top:14px;left:18px;width:0;bottom:0;border-radius:2px;background:linear-gradient(90deg,rgba(0,0,0,.07) 0%,transparent 100%);transition:width .8s ease .7s;pointer-events:none;}
-.d-panel-wrap.open~.d-shadow{width:55px;}
-.d-side{position:absolute;top:14px;left:18px;bottom:0;width:8px;background:linear-gradient(90deg,#b0c4bf,#9ab4af);opacity:0;transition:opacity .3s ease .5s;}
-.d-panel-wrap.open~.d-side{opacity:1;}
-
-.intro-headline{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.75rem,4.5vw,2.8rem);text-align:center;line-height:1.14;letter-spacing:-.03em;color:var(--ink);margin-bottom:14px;}
-.intro-headline em{font-style:normal;color:var(--teal);}
-.intro-sub{font-size:.92rem;color:var(--gray);text-align:center;line-height:1.75;max-width:360px;margin-bottom:36px;}
-.btn-enter{background:var(--teal);color:white;border:none;padding:14px 42px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.08em;text-transform:uppercase;cursor:none;transition:all .25s;box-shadow:0 6px 22px rgba(28,186,159,.3);}
-.btn-enter:hover{background:var(--teal-mid);transform:translateY(-2px);box-shadow:0 10px 30px rgba(28,186,159,.42);}
-.scroll-hint{position:absolute;bottom:28px;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--gray-light);letter-spacing:.15em;text-transform:uppercase;animation:soft-blink 3s infinite;}
-@keyframes soft-blink{0%,100%{opacity:.35}50%{opacity:.9}}
-
-/* ══ TYPEWRITER ══ */
-#screen-typeintro{background:var(--bg);}
-.type-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 42px;max-width:540px;width:100%;box-shadow:0 8px 40px rgba(45,70,83,.07);}
-.type-card-header{display:flex;align-items:center;gap:6px;margin-bottom:26px;}
-.mac-dot{width:11px;height:11px;border-radius:50%;}
-.type-filename{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gray);margin-left:10px;letter-spacing:.04em;}
-.type-text{font-family:'DM Mono',monospace;font-size:clamp(.82rem,1.8vw,.92rem);line-height:2.1;color:var(--navy);}
-.t-teal{color:var(--teal);}.t-dim{color:var(--gray);}
-.cursor-blink{display:inline-block;width:8px;height:1em;background:var(--teal);margin-left:2px;vertical-align:text-bottom;border-radius:1px;animation:soft-blink .9s infinite;}
-
-/* ══ QUIZ ══ */
-#screen-quiz{background:var(--bg);padding:20px 24px;}
-.quiz-header{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:17px 32px;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(45,70,83,.04);}
-.quiz-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;color:var(--teal);letter-spacing:.08em;}
-.lights-row{display:flex;gap:7px;align-items:center;}
-.light-dot{width:8px;height:8px;border-radius:50%;background:var(--gray-light);border:1.5px solid #c8dbd7;transition:all .5s;}
-.light-dot.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 7px var(--teal-glow);}
-.quiz-q-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gray);letter-spacing:.06em;}
-
-/* SPECIAL QUESTION LABEL */
-.q-key-badge{display:inline-flex;align-items:center;gap:6px;background:#fff8e6;border:1px solid #f0d060;color:#8a6a00;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:20px;}
-
-.q-card{width:100%;max-width:620px;margin-top:60px;text-align:center;transition:opacity .3s,transform .3s;}
-.q-card.out{opacity:0;transform:translateY(-14px);}
-.q-card.in{animation:slide-in .4s cubic-bezier(.34,1.1,.64,1);}
-@keyframes slide-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-
-.q-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal);background:var(--teal-dim);border:1px solid var(--border-teal);padding:4px 14px;border-radius:100px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px;}
-.q-text{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.25rem,3.5vw,1.9rem);line-height:1.22;letter-spacing:-.025em;color:var(--ink);margin-bottom:28px;min-height:64px;}
-.q-options{display:flex;flex-direction:column;gap:10px;width:100%;}
-
-.q-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;text-align:left;cursor:none;transition:all .2s;display:flex;align-items:center;gap:13px;box-shadow:0 2px 8px rgba(45,70,83,.04);}
-.q-opt:hover{border-color:var(--teal);background:#eef9f6;transform:translateY(-1px);box-shadow:0 6px 20px rgba(28,186,159,.1);}
-.q-opt:active{transform:scale(.99);}
-/* Destination options get special color hints */
-.q-opt.dest-ifes:hover{border-color:#4a9eff;background:#edf5ff;}
-.q-opt.dest-enem:hover{border-color:#ff8c42;background:#fff4ee;}
-.q-opt.dest-escola:hover{border-color:#a855f7;background:#f5f0ff;}
-.q-opt.dest-facul:hover{border-color:#22c55e;background:#f0fdf4;}
-.q-opt.dest-ifes:hover .opt-letter{background:#4a9eff;color:white;border-color:#4a9eff;}
-.q-opt.dest-enem:hover .opt-letter{background:#ff8c42;color:white;border-color:#ff8c42;}
-.q-opt.dest-escola:hover .opt-letter{background:#a855f7;color:white;border-color:#a855f7;}
-.q-opt.dest-facul:hover .opt-letter{background:#22c55e;color:white;border-color:#22c55e;}
-
-.opt-letter{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border-teal);color:var(--teal);font-family:'DM Mono',monospace;font-size:.72rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:var(--teal-dim);}
-.q-opt:hover .opt-letter{background:var(--teal);color:white;border-color:var(--teal);}
-.opt-text{font-size:.88rem;color:var(--navy);line-height:1.45;}
-.opt-emoji{font-size:1.1rem;flex-shrink:0;}
-
-/* CHALLENGE */
-.q-challenge{font-family:'DM Mono',monospace;font-size:clamp(.82rem,2vw,.95rem);color:var(--navy);background:var(--surface);border:1.5px solid var(--border-teal);padding:22px 26px;border-radius:12px;margin-bottom:18px;text-align:left;line-height:2.1;box-shadow:0 4px 16px rgba(28,186,159,.06);}
-.challenge-num{color:var(--teal);}
-.q-input-wrap{display:flex;gap:10px;width:100%;}
-.q-input{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-family:'DM Mono',monospace;font-size:1rem;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;cursor:text;}
-.q-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(28,186,159,.1);}
-.q-input::placeholder{color:var(--gray-light);}
-.q-input-btn{background:var(--teal);color:white;border:none;padding:13px 22px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:none;transition:all .2s;box-shadow:0 4px 14px rgba(28,186,159,.25);}
-.q-input-btn:hover{background:var(--teal-mid);transform:translateY(-1px);}
-.q-hint{font-size:.76rem;color:var(--gray);margin-top:10px;font-family:'DM Mono',monospace;text-align:left;}
-.q-hint.wrong{color:#d44;}.q-hint.right{color:var(--teal);}
-
-/* ══ TRANSITION ══ */
-#screen-transition{background:var(--bg);}
-.trans-room{margin-bottom:36px;}
-.room-svg{width:min(80vw,340px);}
-.trans-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--gray);letter-spacing:.06em;margin-bottom:6px;}
-.trans-big{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.2rem,3.5vw,1.9rem);color:var(--teal);letter-spacing:-.02em;animation:pulse-text 1.5s ease-in-out infinite;}
-@keyframes pulse-text{0%,100%{opacity:.5}50%{opacity:1}}
-.loading-bar-wrap{width:min(80vw,280px);height:3px;background:var(--gray-light);border-radius:2px;margin-top:26px;overflow:hidden;}
-.loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),#14d4b5);border-radius:2px;width:0%;transition:width .1s linear;box-shadow:0 0 8px var(--teal-glow);}
-
-/* ══ RESULT ══ */
-#screen-result{background:linear-gradient(150deg,#ecf8f5 0%,#e4f2ee 100%);overflow-y:auto;padding:60px 24px 40px;align-items:flex-start;}
-.result-inner{max-width:600px;margin:0 auto;width:100%;text-align:center;}
-
-.result-eyebrow{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.2em;color:var(--teal);text-transform:uppercase;margin-bottom:18px;}
-.result-icon{font-size:clamp(3.5rem,11vw,5.5rem);line-height:1;margin-bottom:14px;display:block;animation:pop-in .5s cubic-bezier(.34,1.56,.64,1);}
-@keyframes pop-in{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1);opacity:1}}
-
-.result-archetype{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,6vw,3rem);letter-spacing:-.04em;line-height:1;color:var(--ink);margin-bottom:8px;}
-.result-archetype span{color:var(--teal);}
-.result-tagline{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--gray);letter-spacing:.04em;margin-bottom:22px;}
-.result-desc{font-size:.9rem;line-height:1.8;color:#4a6670;margin-bottom:22px;text-align:left;background:var(--surface);border-left:3px solid var(--teal);padding:18px 22px;border-radius:0 10px 10px 0;box-shadow:0 4px 18px rgba(45,70,83,.06);}
-.result-traits{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;}
-.trait{background:var(--teal-dim);border:1px solid var(--border-teal);color:var(--teal-mid);padding:5px 13px;border-radius:100px;font-size:.76rem;font-family:'DM Mono',monospace;}
-
-/* DIVIDER */
-.result-divider{display:flex;align-items:center;gap:12px;margin:4px 0 24px;color:var(--gray-light);}
-.result-divider::before,.result-divider::after{content:'';flex:1;height:1px;background:var(--gray-light);}
-.result-divider span{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;color:var(--gray);white-space:nowrap;}
-
-/* EBOOK CARD */
-.ebook-card{background:var(--surface);border:2px solid var(--border-teal);border-radius:16px;padding:0;margin-bottom:16px;overflow:hidden;box-shadow:0 8px 32px rgba(28,186,159,.1);}
-.ebook-header{padding:20px 24px 16px;display:flex;align-items:center;gap:14px;}
-.ebook-cover{width:56px;height:72px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.12);}
-.ebook-info{text-align:left;}
-.ebook-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px;}
-.ebook-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--ink);line-height:1.25;margin-bottom:4px;}
-.ebook-sub{font-size:.78rem;color:var(--gray);line-height:1.4;}
-.ebook-body{padding:0 24px 22px;}
-.ebook-desc{font-size:.84rem;color:var(--gray);line-height:1.6;margin-bottom:16px;text-align:left;}
-
-.btn-claim{display:block;width:100%;color:white;padding:14px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;cursor:none;border:none;transition:all .25s;text-align:center;text-decoration:none;}
-.btn-claim:hover{transform:translateY(-2px);}
-
-.btn-restart{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:.76rem;color:var(--gray-light);cursor:none;letter-spacing:.08em;margin-top:14px;padding:8px;transition:color .2s;}
-.btn-restart:hover{color:var(--gray);}
-
-@media(max-width:480px){
-  .quiz-header{padding:14px 16px;}
-  .q-text{font-size:1.15rem;}
-  .q-opt{padding:12px 13px;}
-  .type-card{padding:26px 20px;}
-  .door-scene{width:170px;height:250px;}
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+:root{--t:#1cba9f;--tm:#17a88f;--td:rgba(28,186,159,.12);--tg:rgba(28,186,159,.4);--n:#2d4653;--i:#1a2c35;--bg:#f2faf8;--s:#fff;--b:rgba(45,70,83,.1);--bt:rgba(28,186,159,.25);--g:#7a9099;--gl:#d8e8e4;--go:#f59e0b}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--i);cursor:none;user-select:none}
+#cur{position:fixed;z-index:9999;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--t);box-shadow:0 0 12px var(--tg);transform:translate(-50%,-50%);transition:width .15s,height .15s,background .2s;mix-blend-mode:multiply}
+#cur.big{width:34px;height:34px;opacity:.4}
+#cur.cl{background:var(--go);width:16px;height:16px}
+#bgc,#ptc{position:fixed;inset:0;z-index:0;pointer-events:none}
+#ptc{z-index:6}
+#cfc{position:fixed;inset:0;z-index:550;pointer-events:none}
+#fl{position:fixed;inset:0;z-index:500;background:var(--t);opacity:0;pointer-events:none;transition:opacity .1s}
+#fl.p{opacity:.08}
+.scr{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .4s}
+.scr.on{opacity:1;pointer-events:all}
+#si{background:linear-gradient(150deg,#ecf8f5,#dff2ee 55%,#f5fbfa)}
+.ilog{position:absolute;top:22px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--t);cursor:none}
+.ds{width:168px;height:242px;position:relative;margin-bottom:14px;perspective:900px}
+.dw{position:absolute;inset:0;border-radius:4px 4px 0 0;background:linear-gradient(175deg,#cfe0db,#bdd4cf);box-shadow:0 14px 48px rgba(45,70,83,.13)}
+.df{position:absolute;top:12px;left:16px;right:16px;bottom:0;background:#bcccc8;border-radius:2px 2px 0 0}
+.dr{position:absolute;top:12px;left:16px;right:16px;bottom:0;border-radius:2px 2px 0 0;overflow:hidden;background:radial-gradient(ellipse at 38% 55%,#c8f5ec,#8de8d8 50%,#5ad4c4)}
+.dr::after{content:'';position:absolute;top:20%;left:25%;width:50%;height:60%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 70%)}
+.dfl{position:absolute;bottom:-3px;left:16px;right:16px;height:4px;background:linear-gradient(90deg,transparent 5%,rgba(28,186,159,.8) 40%,rgba(28,186,159,1) 50%,rgba(28,186,159,.8) 60%,transparent 95%);filter:blur(2px);animation:flk 3s ease-in-out infinite}
+@keyframes flk{0%,100%{opacity:.7}40%{opacity:1}70%{opacity:.85}}
+.dpw{position:absolute;top:12px;left:16px;right:16px;bottom:0;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(.4,0,.1,1)}
+.dpw.open{transform:perspective(900px) rotateY(-68deg)}
+.dpa{position:absolute;inset:0;border-radius:2px 2px 0 0;background:linear-gradient(165deg,#eef7f4,#d9ece7 50%,#cce4de);box-shadow:2px 0 18px rgba(0,0,0,.13);backface-visibility:hidden}
+.dpa::before{content:'';position:absolute;top:14px;left:9px;right:9px;height:72px;border:1.5px solid rgba(45,70,83,.1);border-radius:2px}
+.dpa::after{content:'';position:absolute;top:98px;left:9px;right:9px;bottom:0;border:1.5px solid rgba(45,70,83,.1);border-radius:2px 2px 0 0}
+.dkn{position:absolute;right:11px;top:52%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9ecfc5,#4a9e95);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.dsh{position:absolute;top:12px;left:16px;width:0;bottom:0;background:linear-gradient(90deg,rgba(0,0,0,.07),transparent);transition:width .8s ease .7s}
+.dpw.open~.dsh{width:44px}
+.iey{display:inline-flex;align-items:center;gap:7px;background:rgba(28,186,159,.12);border:1.5px solid rgba(28,186,159,.3);color:var(--t);padding:5px 15px;border-radius:100px;font-size:.76rem;font-weight:700;letter-spacing:.04em;margin-bottom:12px;animation:pb 2.5s ease-in-out infinite}
+@keyframes pb{0%,100%{box-shadow:0 0 0 0 rgba(28,186,159,.3)}50%{box-shadow:0 0 0 5px rgba(28,186,159,0)}}
+.iey::before{content:'';width:6px;height:6px;background:var(--t);border-radius:50%;animation:db 1.5s infinite}
+@keyframes db{0%,100%{opacity:1}50%{opacity:.2}}
+.ih{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.4rem,4vw,2.25rem);text-align:center;line-height:1.12;letter-spacing:-.03em;color:var(--i);margin-bottom:9px}
+.ih em{font-style:normal;color:var(--t)}
+.isb{font-size:.83rem;color:var(--g);text-align:center;line-height:1.7;max-width:370px;margin-bottom:18px}
+.icds{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.icd{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--s);border:1.5px solid var(--b);border-radius:12px;padding:10px 13px;min-width:85px;transition:all .25s;cursor:none}
+.icd:hover{border-color:var(--t);transform:translateY(-3px);box-shadow:0 8px 18px rgba(28,186,159,.12)}
+.ici{font-size:1.3rem}.icl{font-size:.69rem;font-weight:700;color:var(--n);text-align:center;line-height:1.3}.ics{font-size:.61rem;color:var(--g);text-align:center}
+.iarr{color:var(--t);font-size:.9rem;opacity:.4;font-weight:700}
+.bst{background:var(--t);color:#fff;border:none;padding:13px 38px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;letter-spacing:.06em;text-transform:uppercase;cursor:none;transition:all .25s;box-shadow:0 6px 24px rgba(28,186,159,.35);overflow:hidden;position:relative}
+.bst::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .5s}
+.bst:hover::after{transform:translateX(100%)}
+.bst:hover{background:var(--tm);transform:translateY(-2px);box-shadow:0 10px 32px rgba(28,186,159,.45)}
+.sh{position:absolute;bottom:18px;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--gl);letter-spacing:.14em;text-transform:uppercase;animation:bk 3s infinite}
+@keyframes bk{0%,100%{opacity:.3}50%{opacity:.8}}
+#xb{position:fixed;top:0;left:0;right:0;z-index:20;height:4px;background:var(--gl)}
+#xbf{height:100%;background:linear-gradient(90deg,var(--t),#14d4b5);width:0%;transition:width .5s cubic-bezier(.34,1.4,.64,1);box-shadow:0 0 8px var(--tg)}
+#sq{background:var(--bg);padding:10px 18px}
+.qh{position:absolute;top:4px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:11px 22px;background:var(--s);border-bottom:1px solid var(--b);box-shadow:0 2px 10px rgba(45,70,83,.04);gap:8px}
+.ql{font-family:'Syne',sans-serif;font-weight:800;font-size:.82rem;color:var(--t);letter-spacing:.08em}
+.xpp{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--n),var(--t));color:#fff;padding:5px 12px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;flex-shrink:0}
+#xpd{min-width:42px;text-align:right}
+.tw{position:relative;width:38px;height:38px;flex-shrink:0}
+.tsv{transform:rotate(-90deg);width:38px;height:38px}
+.ttr{fill:none;stroke:var(--gl);stroke-width:3}
+.tri{fill:none;stroke:var(--t);stroke-width:3;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;transition:stroke-dashoffset .1s linear,stroke .3s}
+.tnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--n)}
+.cob{display:none;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:800;font-size:.72rem;flex-shrink:0}
+.cob.on{display:flex}
+.cob.c2{background:#fef3c7;color:#d97706;border:1.5px solid #fbbf24}
+.cob.c3{background:#fee2e2;color:#dc2626;border:1.5px solid #f87171}
+.cob.c4{background:linear-gradient(135deg,#fbbf24,#ef4444);color:#fff}
+.qcd{width:100%;max-width:590px;margin-top:62px;text-align:center;transition:opacity .25s,transform .25s}
+.qcd.out{opacity:0;transform:translateY(-14px)}
+.qcd.in{animation:qin .38s cubic-bezier(.34,1.1,.64,1)}
+@keyframes qin{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.qtag{display:inline-block;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--t);background:var(--td);border:1px solid var(--bt);padding:3px 11px;border-radius:100px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.qtag.dt{background:#fef3c7;border-color:#fbbf24;color:#d97706}
+.qtxt{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.1rem,3.2vw,1.65rem);line-height:1.2;letter-spacing:-.025em;color:var(--i);margin-bottom:20px;min-height:52px}
+.qopts{display:flex;flex-direction:column;gap:7px;width:100%}
+.qo{background:var(--s);border:1.5px solid var(--b);border-radius:10px;padding:11px 15px;text-align:left;cursor:none;transition:all .18s;display:flex;align-items:center;gap:11px;box-shadow:0 2px 6px rgba(45,70,83,.04);position:relative;overflow:hidden}
+.qo::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--td),transparent);transform:translateX(-101%);transition:transform .22s ease}
+.qo:hover{border-color:var(--t);transform:translateX(4px);box-shadow:0 5px 15px rgba(28,186,159,.1)}
+.qo:hover::before{transform:translateX(0)}
+.qo:active{transform:scale(.98) translateX(0)}
+.oe{font-size:1rem;flex-shrink:0}
+.ol{width:25px;height:25px;border-radius:6px;border:1.5px solid var(--bt);color:var(--t);font-family:'DM Mono',monospace;font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;background:var(--td)}
+.qo:hover .ol{background:var(--t);color:#fff;border-color:var(--t)}
+.ot{font-size:.86rem;color:var(--n);line-height:1.4;position:relative;z-index:1}
+.qo.di:hover{border-color:#4a9eff;background:#f0f7ff}.qo.di:hover .ol{background:#4a9eff;color:#fff;border-color:#4a9eff}
+.qo.de:hover{border-color:#ff8c42;background:#fff8f3}.qo.de:hover .ol{background:#ff8c42;color:#fff;border-color:#ff8c42}
+.qo.ds:hover{border-color:#a855f7;background:#faf5ff}.qo.ds:hover .ol{background:#a855f7;color:#fff;border-color:#a855f7}
+.qo.dfu:hover{border-color:#22c55e;background:#f0fdf4}.qo.dfu:hover .ol{background:#22c55e;color:#fff;border-color:#22c55e}
+.qo.dc:hover{border-color:#f59e0b;background:#fffbeb}.qo.dc:hover .ol{background:#f59e0b;color:#fff;border-color:#f59e0b}
+.qch{font-family:'DM Mono',monospace;font-size:clamp(.8rem,2vw,.9rem);color:var(--n);background:var(--s);border:1.5px solid var(--bt);padding:18px 22px;border-radius:12px;margin-bottom:14px;text-align:left;line-height:2;box-shadow:0 4px 14px rgba(28,186,159,.06)}
+.cn{color:var(--t)}
+.qiw{display:flex;gap:9px;width:100%}
+.qin{flex:1;background:var(--s);border:1.5px solid var(--b);border-radius:10px;padding:11px 15px;font-family:'DM Mono',monospace;font-size:.95rem;color:var(--i);outline:none;transition:border-color .2s,box-shadow .2s;cursor:text}
+.qin:focus{border-color:var(--t);box-shadow:0 0 0 3px rgba(28,186,159,.1)}
+.qin::placeholder{color:var(--gl)}
+.qib{background:var(--t);color:#fff;border:none;padding:11px 20px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:none;transition:all .2s}
+.qib:hover{background:var(--tm);transform:translateY(-1px)}
+.qhn{font-size:.73rem;color:var(--g);margin-top:7px;font-family:'DM Mono',monospace;text-align:left}
+.qhn.wr{color:#dc2626}.qhn.ok{color:var(--t)}
+.fxp{position:fixed;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--t);pointer-events:none;z-index:999;animation:fup .85s ease forwards;white-space:nowrap}
+.fxp.g{color:var(--go)}
+@keyframes fup{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-55px) scale(1.15)}}
+#at{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-18px);z-index:800;background:var(--n);color:#fff;border-radius:14px;padding:10px 17px;display:flex;align-items:center;gap:11px;box-shadow:0 8px 26px rgba(0,0,0,.17);opacity:0;pointer-events:none;transition:all .38s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;border:1px solid rgba(28,186,159,.26)}
+#at.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ai{font-size:1.25rem}.at1{font-size:.6rem;color:var(--t);font-family:'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;display:block}.at2{font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;display:block}
+#sff{background:var(--n);text-align:center}
+.ffe{font-size:3.5rem;margin-bottom:14px;animation:ffp .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes ffp{from{transform:scale(0) rotate(-12deg)}to{transform:scale(1)}}
+.ffl{font-family:'DM Mono',monospace;font-size:.67rem;color:var(--t);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.fft{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(1rem,2.8vw,1.45rem);color:#fff;line-height:1.3;max-width:490px;letter-spacing:-.02em;margin-bottom:6px}
+.ffs2{font-size:.72rem;color:rgba(255,255,255,.38);font-family:'DM Mono',monospace;margin-bottom:26px}
+.ffn{background:var(--t);color:var(--i);border:none;padding:11px 30px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:.84rem;letter-spacing:.06em;text-transform:uppercase;cursor:none;transition:all .2s;box-shadow:0 4px 16px rgba(28,186,159,.35)}
+.ffn:hover{transform:translateY(-2px)}
+#sty{background:var(--bg)}
+.tyc{background:var(--s);border:1px solid var(--b);border-radius:16px;padding:28px 35px;max-width:500px;width:100%;box-shadow:0 8px 34px rgba(45,70,83,.07)}
+.tyh{display:flex;align-items:center;gap:6px;margin-bottom:20px}
+.mdt{width:10px;height:10px;border-radius:50%}
+.tyf{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--g);margin-left:8px;letter-spacing:.04em}
+.tyt{font-family:'DM Mono',monospace;font-size:clamp(.78rem,1.8vw,.87rem);line-height:2;color:var(--n)}
+.tcl2{color:var(--t)}.tdm{color:var(--g)}
+.tycu{display:inline-block;width:7px;height:1em;background:var(--t);margin-left:2px;vertical-align:text-bottom;border-radius:1px;animation:bk .9s infinite}
+#str{background:var(--bg);text-align:center}
+.trsv{width:min(80vw,285px);margin-bottom:20px}
+.trt{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--g);letter-spacing:.06em;margin-bottom:5px}
+.trb{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1rem,3.5vw,1.55rem);color:var(--t);animation:pt 1.5s ease-in-out infinite}
+@keyframes pt{0%,100%{opacity:.45}50%{opacity:1}}
+.lbw{width:min(80vw,245px);height:3px;background:var(--gl);border-radius:2px;margin-top:18px;overflow:hidden}
+.lbf{height:100%;background:linear-gradient(90deg,var(--t),#14d4b5);width:0%;transition:width .1s linear;box-shadow:0 0 8px var(--tg)}
+#sre{background:linear-gradient(150deg,#ecf8f5,#e4f2ee);overflow-y:auto;padding:48px 18px 30px;align-items:flex-start}
+.ri{max-width:560px;margin:0 auto;width:100%;text-align:center}
+.rew{font-family:'DM Mono',monospace;font-size:.64rem;letter-spacing:.2em;color:var(--t);text-transform:uppercase;margin-bottom:12px}
+.rlb{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--n),var(--t));color:#fff;padding:7px 17px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;margin-bottom:13px;box-shadow:0 4px 13px rgba(28,186,159,.27)}
+.rxpl{font-size:.68rem;opacity:.65;margin-left:2px}
+.ric{font-size:clamp(2.8rem,9vw,4.5rem);line-height:1;margin-bottom:10px;display:block;animation:pi .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pi{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1);opacity:1}}
+.rar{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,5.5vw,2.7rem);letter-spacing:-.04em;line-height:1;color:var(--i);margin-bottom:7px}
+.rar span{color:var(--t)}
+.rtg{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--g);letter-spacing:.03em;margin-bottom:17px}
+.stk{display:flex;justify-content:center;gap:20px;margin-bottom:17px}
+.ski{display:flex;flex-direction:column;align-items:center}
+.skn{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--t);letter-spacing:-.04em;line-height:1}
+.skl{font-size:.64rem;color:var(--g);font-family:'DM Mono',monospace;margin-top:2px}
+.astr{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:17px}
+.ae{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--s);border:1.5px solid var(--b);border-radius:10px;padding:7px 10px;min-width:62px}
+.aei{font-size:1.2rem}.aen{font-size:.57rem;font-family:'DM Mono',monospace;color:var(--g);text-align:center}
+.rdsc{font-size:.86rem;line-height:1.8;color:#4a6670;margin-bottom:17px;text-align:left;background:var(--s);border-left:3px solid var(--t);padding:14px 18px;border-radius:0 10px 10px 0;box-shadow:0 4px 13px rgba(45,70,83,.06)}
+.rtr{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:17px}
+.trait{background:var(--td);border:1px solid var(--bt);color:#17a08a;padding:4px 11px;border-radius:100px;font-size:.71rem;font-family:'DM Mono',monospace}
+.rof{background:var(--s);border:1.5px solid var(--b);border-radius:14px;padding:19px;margin-bottom:12px;text-align:left;box-shadow:0 6px 20px rgba(45,70,83,.06)}
+.ol2{font-family:'DM Mono',monospace;font-size:.61rem;letter-spacing:.13em;color:var(--t);text-transform:uppercase;margin-bottom:6px}
+.oti{font-family:'Syne',sans-serif;font-weight:800;font-size:.98rem;color:var(--i);margin-bottom:4px}
+.od{font-size:.8rem;color:var(--g);line-height:1.6;margin-bottom:13px}
+.bca{display:block;width:100%;color:#fff;padding:13px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;cursor:none;border:none;transition:all .22s;text-align:center;text-decoration:none}
+.bca:hover{transform:translateY(-2px)}
+/* SHARE CARD AREA */
+.share-section{display:flex;gap:9px;margin-top:10px;flex-wrap:wrap}
+.bsh{flex:1;min-width:140px;background:transparent;border:1.5px solid var(--b);color:var(--n);padding:10px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.79rem;cursor:none;transition:all .2s}
+.bsh:hover{border-color:var(--t);color:var(--t)}
+.bdl{flex:1;min-width:140px;background:var(--n);color:#fff;border:none;padding:10px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.79rem;cursor:none;transition:all .2s;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.bdl:hover{background:#1e3040;transform:translateY(-1px)}
+.brs{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:.71rem;color:var(--gl);cursor:none;letter-spacing:.08em;margin-top:10px;padding:8px;display:block;margin-left:auto;margin-right:auto;transition:color .2s}
+.brs:hover{color:var(--g)}
+/* CARD PREVIEW MODAL */
+#card-modal{position:fixed;inset:0;z-index:600;background:rgba(26,44,53,.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;padding:20px}
+#card-modal.show{opacity:1;pointer-events:all}
+.card-modal-inner{background:var(--s);border-radius:20px;padding:24px;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.3);text-align:center}
+.card-modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--n);margin-bottom:16px}
+#preview-canvas{border-radius:12px;max-width:100%;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.card-modal-btns{display:flex;gap:10px;margin-top:16px}
+.btn-download{flex:1;background:var(--t);color:#fff;border:none;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;cursor:none;transition:all .2s;text-align:center}
+.btn-download:hover{background:var(--tm);transform:translateY(-1px)}
+.btn-modal-close{flex:1;background:transparent;border:1.5px solid var(--b);color:var(--n);padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:none;transition:all .2s}
+.btn-modal-close:hover{border-color:var(--t);color:var(--t)}
+#egg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) scale(0);z-index:900;background:linear-gradient(135deg,var(--go),#f97316);color:#fff;border-radius:14px;padding:12px 22px;font-family:'Syne',sans-serif;font-weight:800;font-size:.86rem;box-shadow:0 8px 26px rgba(245,158,11,.4);transition:transform .4s cubic-bezier(.34,1.56,.64,1);text-align:center;max-width:290px;pointer-events:none}
+#egg.show{transform:translateX(-50%) scale(1)}
+@media(max-width:480px){.qh{padding:9px 11px;gap:6px}.qtxt{font-size:1.04rem}.qo{padding:10px 11px}.tyc{padding:22px 17px}.icds{gap:5px}.icd{min-width:76px;padding:9px 10px}.iarr{display:none}.share-section{flex-direction:column}}
 </style>
 </head>
 <body>
-<canvas id="dots-canvas"></canvas>
-<canvas id="particles-canvas"></canvas>
-<div id="flash"></div>
-<div id="cursor"></div>
-
-<!-- INTRO -->
-<div class="screen active" id="screen-intro">
-  <div class="intro-logo">✦ um quarto</div>
-  <div class="door-scene">
-    <div class="d-wall"></div>
-    <div class="d-frame"></div>
-    <div class="d-room"></div>
-    <div class="d-floor-light"></div>
-    <div class="d-panel-wrap" id="door-panel">
-      <div class="d-panel"><div class="d-knob"></div></div>
+<canvas id="bgc"></canvas><canvas id="ptc"></canvas><canvas id="cfc"></canvas>
+<div id="fl"></div><div id="cur"></div>
+<div id="xb"><div id="xbf"></div></div>
+<div id="at"><div class="ai" id="ai">🏆</div><div><span class="at1">Conquista desbloqueada!</span><span class="at2" id="an">-</span></div></div>
+<div id="egg">🥚 Easter egg!<br><span style="font-size:.7rem;opacity:.8">5 cliques no logo. Pura dedicação.</span></div>
+<!-- CARD PREVIEW MODAL -->
+<div id="card-modal">
+  <div class="card-modal-inner">
+    <div class="card-modal-title">📸 Seu cartão de perfil</div>
+    <canvas id="preview-canvas" width="540" height="300"></canvas>
+    <div class="card-modal-btns">
+      <button class="btn-download" onclick="downloadCard()">⬇️ Baixar imagem</button>
+      <button class="btn-modal-close" onclick="closeCardModal()">Fechar</button>
     </div>
-    <div class="d-shadow"></div>
-    <div class="d-side"></div>
   </div>
-  <h1 class="intro-headline">O que você quer<br>ser <em>depois disso?</em></h1>
-  <p class="intro-sub">Algumas perguntas. Um perfil revelado. E um presente pra você levar embora.</p>
-  <button class="btn-enter" onclick="startExperience()">Descobrir agora →</button>
-  <div class="scroll-hint">● 7 perguntas • 4 perfis • 1 presente</div>
 </div>
 
-<!-- TYPEWRITER -->
-<div class="screen" id="screen-typeintro">
-  <div class="type-card">
-    <div class="type-card-header">
-      <div class="mac-dot" style="background:#ff6057"></div>
-      <div class="mac-dot" style="background:#ffbd2e"></div>
-      <div class="mac-dot" style="background:#27c93f"></div>
-      <span class="type-filename">perfil_aluno.sh</span>
+<div class="scr on" id="si">
+  <div class="ilog" onclick="ec()">✦ um quarto</div>
+  <div class="ds">
+    <div class="dw"></div><div class="df"></div><div class="dr"></div><div class="dfl"></div>
+    <div class="dpw" id="dp"><div class="dpa"><div class="dkn"></div></div></div>
+    <div class="dsh"></div>
+  </div>
+  <div class="iey">🎁 Responda e ganhe um e-book gratuito</div>
+  <h1 class="ih">Qual é o seu<br>perfil de <em>estudante?</em></h1>
+  <p class="isb">8 perguntas rápidas para descobrir como você aprende — e ganhar um guia feito sob medida. <b>Gratuito. Sem cadastro.</b></p>
+  <div class="icds">
+    <div class="icd"><span class="ici">✏️</span><span class="icl">8 perguntas</span><span class="ics">~2 min</span></div>
+    <span class="iarr">→</span>
+    <div class="icd"><span class="ici">⚡</span><span class="icl">Ganhe XP</span><span class="ics">responda rápido</span></div>
+    <span class="iarr">→</span>
+    <div class="icd"><span class="ici">🧠</span><span class="icl">10 perfis</span><span class="ics">qual é o seu?</span></div>
+    <span class="iarr">→</span>
+    <div class="icd"><span class="ici">🎁</span><span class="icl">E-book grátis</span><span class="ics">no WhatsApp</span></div>
+  </div>
+  <button class="bst" onclick="go()">Quero descobrir meu perfil →</button>
+  <div class="sh">✦ gratuito · sem cadastro · 10 perfis diferentes</div>
+</div>
+
+<div class="scr" id="sty">
+  <div class="tyc">
+    <div class="tyh">
+      <div class="mdt" style="background:#ff6057"></div>
+      <div class="mdt" style="background:#ffbd2e"></div>
+      <div class="mdt" style="background:#27c93f"></div>
+      <span class="tyf">perfil_aluno.sh</span>
     </div>
-    <div class="type-text" id="type-display"></div>
-    <span class="cursor-blink" id="type-cursor"></span>
+    <div class="tyt" id="td"></div>
+    <span class="tycu" id="tycu"></span>
   </div>
 </div>
 
-<!-- QUIZ -->
-<div class="screen" id="screen-quiz">
-  <div class="quiz-header">
-    <div class="quiz-logo">um quarto</div>
-    <div class="lights-row" id="lights-row">
-      <div class="light-dot"></div><div class="light-dot"></div><div class="light-dot"></div>
-      <div class="light-dot"></div><div class="light-dot"></div><div class="light-dot"></div>
-      <div class="light-dot"></div>
+<div class="scr" id="sq">
+  <div class="qh">
+    <div class="ql">um quarto</div>
+    <div class="tw">
+      <svg class="tsv" viewBox="0 0 38 38">
+        <circle class="ttr" cx="19" cy="19" r="15"/>
+        <circle class="tri" id="tri" cx="19" cy="19" r="15"/>
+      </svg>
+      <div class="tnum" id="tn">15</div>
     </div>
-    <div class="quiz-q-num" id="q-num">01 / 07</div>
+    <div class="cob" id="cob">🔥 x2</div>
+    <div class="xpp">⚡ <span id="xpd">0 XP</span></div>
   </div>
-  <div class="q-card" id="q-card"></div>
+  <div class="qcd" id="qcd"></div>
 </div>
 
-<!-- TRANSITION -->
-<div class="screen" id="screen-transition">
-  <div class="trans-room">
-    <svg class="room-svg" viewBox="0 0 340 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="340" height="260" fill="#eaf4f1"/>
-      <polygon points="44,28 296,28 340,0 0,0" fill="#d8ece7"/>
-      <polygon points="44,28 0,0 0,260 44,232" fill="#d0e6e1"/>
-      <polygon points="296,28 340,0 340,260 296,232" fill="#cce3de"/>
-      <polygon points="44,232 296,232 340,260 0,260" fill="#c4dbd5"/>
-      <line x1="44" y1="232" x2="170" y2="28" stroke="#c0d8d2" stroke-width="1"/>
-      <line x1="296" y1="232" x2="170" y2="28" stroke="#c0d8d2" stroke-width="1"/>
-      <rect x="120" y="45" width="100" height="66" rx="2" fill="#b4e4da" stroke="#a4d4ca" stroke-width="1.5"/>
-      <line x1="170" y1="45" x2="170" y2="111" stroke="#a4d4ca" stroke-width="1"/>
-      <line x1="120" y1="78" x2="220" y2="78" stroke="#a4d4ca" stroke-width="1"/>
-      <polygon points="120,45 220,45 246,28 94,28" fill="rgba(28,186,159,0.07)"/>
-      <rect x="76" y="148" width="188" height="6" rx="2" fill="#b0c8c2"/>
-      <rect x="88" y="154" width="7" height="46" rx="2" fill="#a8c0ba"/>
-      <rect x="245" y="154" width="7" height="46" rx="2" fill="#a8c0ba"/>
-      <rect x="158" y="116" width="3" height="32" fill="#98b4ae"/>
-      <polygon points="147,116 184,116 177,100 154,100" fill="#b0c8c2"/>
-      <polygon points="147,116 184,116 198,152 130,152" fill="url(#lLamp)" opacity="0.55"/>
-      <rect x="196" y="132" width="34" height="7" rx="1" fill="#1cba9f" opacity="0.65"/>
-      <rect x="198" y="125" width="30" height="7" rx="1" fill="#17a08a" opacity="0.55"/>
-      <rect x="200" y="118" width="26" height="7" rx="1" fill="#1cba9f" opacity="0.4"/>
-      <rect x="92" y="107" width="52" height="38" rx="3" fill="#c0d6d0" stroke="#b0c6c0" stroke-width="1.5"/>
-      <rect x="95" y="110" width="46" height="28" rx="2" fill="url(#lScreen)"/>
-      <rect x="114" y="145" width="7" height="6" fill="#b0c6c0"/>
-      <rect x="108" y="151" width="18" height="2.5" rx="1" fill="#b0c6c0"/>
-      <rect x="128" y="186" width="74" height="6" rx="3" fill="#b8ccc8"/>
-      <rect x="138" y="192" width="7" height="24" rx="2" fill="#a8bcb8"/>
-      <rect x="195" y="192" width="7" height="24" rx="2" fill="#a8bcb8"/>
-      <text x="170" y="88" font-family="Georgia,serif" font-size="20" fill="#1cba9f" opacity="0.1" text-anchor="middle">¼</text>
-      <defs>
-        <linearGradient id="lLamp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1cba9f" stop-opacity="0.2"/><stop offset="100%" stop-color="#1cba9f" stop-opacity="0"/></linearGradient>
-        <linearGradient id="lScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d0eee9"/><stop offset="100%" stop-color="#bcdbd4"/></linearGradient>
-      </defs>
-    </svg>
-  </div>
-  <div class="trans-text">montando seu perfil...</div>
-  <div class="trans-big" id="trans-label">Analisando respostas</div>
-  <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loading-bar"></div></div>
+<div class="scr" id="sff">
+  <div class="ffe" id="ffe">🧠</div>
+  <div class="ffl">Você sabia?</div>
+  <div class="fft" id="fft"></div>
+  <div class="ffs2" id="ffs"></div>
+  <button class="ffn" onclick="rq()">Continuar →</button>
 </div>
 
-<!-- RESULT -->
-<div class="screen" id="screen-result">
-  <div class="result-inner" id="result-inner"></div>
+<div class="scr" id="str">
+  <svg class="trsv" viewBox="0 0 280 210" fill="none">
+    <rect width="280" height="210" fill="#eaf4f1"/>
+    <polygon points="32,20 248,20 280,0 0,0" fill="#d8ece7"/>
+    <polygon points="32,20 0,0 0,210 32,190" fill="#d0e6e1"/>
+    <polygon points="248,20 280,0 280,210 248,190" fill="#cce3de"/>
+    <polygon points="32,190 248,190 280,210 0,210" fill="#c4dbd5"/>
+    <line x1="32" y1="190" x2="140" y2="20" stroke="#c0d8d2" stroke-width="1"/>
+    <line x1="248" y1="190" x2="140" y2="20" stroke="#c0d8d2" stroke-width="1"/>
+    <rect x="90" y="34" width="100" height="58" rx="2" fill="#b4e4da" stroke="#a4d4ca" stroke-width="1.5"/>
+    <line x1="140" y1="34" x2="140" y2="92" stroke="#a4d4ca" stroke-width="1"/>
+    <line x1="90" y1="63" x2="190" y2="63" stroke="#a4d4ca" stroke-width="1"/>
+    <rect x="52" y="122" width="176" height="6" rx="2" fill="#b0c8c2"/>
+    <rect x="64" y="128" width="6" height="40" rx="2" fill="#a8c0ba"/>
+    <rect x="210" y="128" width="6" height="40" rx="2" fill="#a8c0ba"/>
+    <rect x="129" y="94" width="3" height="28" fill="#98b4ae"/>
+    <polygon points="119,94 153,94 147,80 125,80" fill="#b0c8c2"/>
+    <polygon points="119,94 153,94 167,124 105,124" fill="rgba(28,186,159,.13)"/>
+    <rect x="158" y="107" width="28" height="6" rx="1" fill="#1cba9f" opacity=".65"/>
+    <rect x="68" y="87" width="44" height="32" rx="3" fill="#c0d6d0" stroke="#b0c6c0" stroke-width="1.5"/>
+    <rect x="71" y="90" width="38" height="23" rx="2" fill="#d0eee9"/>
+    <text x="140" y="74" font-family="Georgia,serif" font-size="15" fill="#1cba9f" opacity=".1" text-anchor="middle">1/4</text>
+  </svg>
+  <div class="trt">calculando seu perfil...</div>
+  <div class="trb" id="trl">Analisando respostas</div>
+  <div class="lbw"><div class="lbf" id="lb"></div></div>
+</div>
+
+<div class="scr" id="sre">
+  <div class="ri" id="ri"></div>
 </div>
 
 <script>
-/* ── CURSOR ── */
-const cursor=document.getElementById('cursor');
-document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
-function bindCursor(){document.querySelectorAll('button,a,.q-opt').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('big'));el.addEventListener('mouseleave',()=>cursor.classList.remove('big'));});}
-bindCursor();
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
+document.addEventListener('mousedown',()=>cur.classList.add('cl'));
+document.addEventListener('mouseup',()=>cur.classList.remove('cl'));
+function bc(){document.querySelectorAll('button,a,.qo,.icd,.btn-download,.btn-modal-close,.bdl').forEach(el=>{el.addEventListener('mouseenter',()=>cur.classList.add('big'));el.addEventListener('mouseleave',()=>cur.classList.remove('big'))})}
+bc();
+let ax;
+function getAx(){if(!ax)ax=new(window.AudioContext||window.webkitAudioContext)();return ax}
+function tn(f,d=.12,tp='sine',v=.13,dl=0){try{const c=getAx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=tp;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime+dl);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+dl+d);o.start(c.currentTime+dl);o.stop(c.currentTime+dl+d+.01)}catch(e){}}
+const sfx={c:()=>tn(440,.08,'sine',.09),x:()=>{tn(523,.07,'sine',.1);setTimeout(()=>tn(659,.07,'sine',.09),80);setTimeout(()=>tn(784,.1,'sine',.09),160)},co:()=>[523,659,784,1047].forEach((f,i)=>tn(f,.1,'sine',.11,i*.07)),a:()=>[784,880,1047].forEach((f,i)=>tn(f,.14,'triangle',.13,i*.1)),w:()=>{tn(200,.18,'sawtooth',.07);setTimeout(()=>tn(160,.18,'sawtooth',.06),150)},r:()=>[261,329,392,523,659,784].forEach((f,i)=>tn(f,.28,'sine',.1,i*.08)),ff:()=>[440,550].forEach((f,i)=>tn(f,.11,'sine',.09,i*.1))};
+const bgc=document.getElementById('bgc'),bx=bgc.getContext('2d');
+bgc.width=innerWidth;bgc.height=innerHeight;
+const bd=Array.from({length:50},()=>({x:Math.random()*bgc.width,y:Math.random()*bgc.height,r:Math.random()*2+.4,o:Math.random()*.25+.04,s:(Math.random()*.003+.001)*(Math.random()>.5?1:-1),vy:Math.random()*.1+.03}));
+(function dBG(){bx.clearRect(0,0,bgc.width,bgc.height);bd.forEach(d=>{d.o+=d.s;if(d.o>.3||d.o<.03)d.s=-d.s;d.y-=d.vy;if(d.y<-10)d.y=bgc.height+10;bx.beginPath();bx.arc(d.x,d.y,d.r,0,Math.PI*2);bx.fillStyle=`rgba(28,186,159,${d.o})`;bx.fill()});requestAnimationFrame(dBG)})();
+const ptc=document.getElementById('ptc'),px=ptc.getContext('2d');
+ptc.width=innerWidth;ptc.height=innerHeight;
+let pts=[];
+function sp(x,y,n=12,color='28,186,159'){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=Math.random()*4+1;pts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,life:1,decay:Math.random()*.038+.02,size:Math.random()*3+1,color})}}
+(function dPts(){px.clearRect(0,0,ptc.width,ptc.height);pts=pts.filter(p=>p.life>0);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.1;p.life-=p.decay;px.beginPath();px.arc(p.x,p.y,p.size,0,Math.PI*2);px.fillStyle=`rgba(${p.color},${p.life*.7})`;px.fill()});requestAnimationFrame(dPts)})();
+const cfc=document.getElementById('cfc'),cx=cfc.getContext('2d');
+cfc.width=innerWidth;cfc.height=innerHeight;
+let cfs=[];
+function lConf(){const cols=['#1cba9f','#2d4653','#f59e0b','#ef4444','#a855f7','#22c55e','#fff','#ff8c42'];for(let i=0;i<140;i++)cfs.push({x:Math.random()*cfc.width,y:-10-Math.random()*120,w:Math.random()*10+4,h:Math.random()*6+3,vx:Math.random()*4-2,vy:Math.random()*3+1.5,rot:Math.random()*360,rv:Math.random()*6-3,color:cols[Math.floor(Math.random()*cols.length)]});aC()}
+function aC(){if(!cfs.length)return;cx.clearRect(0,0,cfc.width,cfc.height);cfs=cfs.filter(p=>p.y<cfc.height+30);cfs.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.rv;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot*Math.PI/180);cx.fillStyle=p.color;cx.globalAlpha=Math.min(1,(cfc.height-p.y)/150);cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()});requestAnimationFrame(aC)}
+function fl(){const f=document.getElementById('fl');f.classList.add('p');setTimeout(()=>f.classList.remove('p'),120)}
+function ss(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));setTimeout(()=>document.getElementById(id)?.classList.add('on'),60)}
+let eN=0;
+function ec(){sfx.c();eN++;if(eN>=5){const t=document.getElementById('egg');t.classList.add('show');sfx.a();sp(innerWidth/2,innerHeight/2,28,'245,158,11');setTimeout(()=>t.classList.remove('show'),3600);eN=0}}
+setTimeout(()=>document.getElementById('dp').classList.add('open'),700);
 
-/* ── DOTS ── */
-const dc=document.getElementById('dots-canvas'),dctx=dc.getContext('2d');
-dc.width=window.innerWidth;dc.height=window.innerHeight;
-const dots=Array.from({length:55},()=>({x:Math.random()*dc.width,y:Math.random()*dc.height,r:Math.random()*2+.4,o:Math.random()*.28+.04,s:(Math.random()*.003+.001)*(Math.random()>.5?1:-1),vy:Math.random()*.12+.04}));
-(function drawDots(){dctx.clearRect(0,0,dc.width,dc.height);dots.forEach(d=>{d.o+=d.s;if(d.o>.32||d.o<.03)d.s=-d.s;d.y-=d.vy;if(d.y<-10)d.y=dc.height+10;dctx.beginPath();dctx.arc(d.x,d.y,d.r,0,Math.PI*2);dctx.fillStyle=`rgba(28,186,159,${d.o})`;dctx.fill();});requestAnimationFrame(drawDots);})();
+// STATE
+let cQ=0,trs={},dst=null,xp=0,combo=0,qSt=0,tIv=null,tL=15,aE=[],aG=new Set(),fI=0,rFF=false,mC=0;
+let currentArch=null, currentDest=null, currentLv=null;
 
-/* ── PARTICLES ── */
-const pc=document.getElementById('particles-canvas'),pctx=pc.getContext('2d');
-pc.width=window.innerWidth;pc.height=window.innerHeight;
-let parts=[];
-function spawnParticles(x,y,n=10){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=Math.random()*3+1;parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,life:1,decay:Math.random()*.035+.02,size:Math.random()*3+1});}}
-(function drawParts(){pctx.clearRect(0,0,pc.width,pc.height);parts=parts.filter(p=>p.life>0);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.life-=p.decay;pctx.beginPath();pctx.arc(p.x,p.y,p.size,0,Math.PI*2);pctx.fillStyle=`rgba(28,186,159,${p.life*.65})`;pctx.fill();});requestAnimationFrame(drawParts);})();
-
-/* ── FLASH ── */
-function flash(){const f=document.getElementById('flash');f.classList.add('pop');setTimeout(()=>f.classList.remove('pop'),140);}
-
-/* ── SCREENS ── */
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));setTimeout(()=>document.getElementById(id).classList.add('active'),60);}
-
-/* ── DOOR ── */
-setTimeout(()=>document.getElementById('door-panel').classList.add('open'),700);
-
-/* ══════════════════════════
-   PERGUNTAS
-══════════════════════════ */
-const questions = [
-  // Q1 - Situação
-  {
-    tag: '🌙 situação real',
-    text: 'Uma notícia chegou: você ganhou uma semana extra antes da prova. O que você faz?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'📅', text:'Monto um cronograma caprichado e começo no dia seguinte', trait:'estrategista' },
-      { letter:'B', emoji:'🔥', text:'Estudo em modo intensão os 2 últimos dias', trait:'guerreiro' },
-      { letter:'C', emoji:'😌', text:'Fico tranquilo — já estava preparado', trait:'confiante' },
-      { letter:'D', emoji:'🎨', text:'Refaço todos os resumos do meu jeito, mais bonito', trait:'criativo' },
-    ]
-  },
-  // Q2 - Kriptonita
-  {
-    tag: '😈 seu vilão favorito',
-    text: 'Qual desses consegue te tirar do foco em 30 segundos?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'📱', text:'Uma notificação. Uma. Só uma.', trait:'criativo' },
-      { letter:'B', emoji:'🛏️', text:'A cama me olha e eu já sei que perdemos', trait:'genio' },
-      { letter:'C', emoji:'🤯', text:'Ver o quanto falta pra estudar e fechar tudo', trait:'guerreiro' },
-      { letter:'D', emoji:'🐇', text:'Procrastinação disfarçada de "organização"', trait:'estrategista' },
-    ]
-  },
-  // Q3 - Quando entende
-  {
-    tag: '💡 seu momento eureka',
-    text: 'Você entendeu algo difícil pela primeira vez. O que acontece agora?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'🗣️', text:'Preciso explicar pra alguém AGORA', trait:'guerreiro' },
-      { letter:'B', emoji:'🎯', text:'Já calculo onde esse conteúdo vai cair', trait:'estrategista' },
-      { letter:'C', emoji:'⚡', text:'Três minutos de euforia irracional', trait:'relampago' },
-      { letter:'D', emoji:'😤', text:'Fico irritado — por que não aprendi antes?', trait:'genio' },
-    ]
-  },
-  // Q4 - PERGUNTA CHAVE DE DESTINO ⭐
-  {
-    tag: '🧭 sua rota',
-    isDestination: true,
-    text: 'Pra onde você está indo de verdade?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'🏛️', text:'Passar no IFES, CEFET ou instituto federal', dest:'ifes', trait:'guerreiro' },
-      { letter:'B', emoji:'📝', text:'Mandar bem no ENEM e entrar numa federal', dest:'enem', trait:'estrategista' },
-      { letter:'C', emoji:'🎒', text:'Me sair bem na escola agora — vestibular é depois', dest:'escola', trait:'criativo' },
-      { letter:'D', emoji:'🎓', text:'Sobreviver (e prosperar) na faculdade', dest:'faculdade', trait:'relampago' },
-    ]
-  },
-  // Q5 - Superpoder
-  {
-    tag: '🦸 superpoder de estudante',
-    text: 'Se você pudesse escolher um superpoder pra estudar, qual seria?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'🧠', text:'Memorizar tudo de primeira leitura', trait:'relampago' },
-      { letter:'B', emoji:'⏰', text:'Nunca procrastinar — foco total na hora H', trait:'estrategista' },
-      { letter:'C', emoji:'🌀', text:'Entender qualquer explicação, por pior que seja', trait:'genio' },
-      { letter:'D', emoji:'🔋', text:'Estudar sem cansar por horas a fio', trait:'guerreiro' },
-    ]
-  },
-  // Q6 - Desafio matemático
-  {
-    tag: '🔢 desafio do quarto',
-    text: 'Prove que você veio pra jogar.',
-    type: 'challenge',
-    problem: 'Um aluno estuda <span class="challenge-num">1/4</span> do dia\nnos fins de semana.\n\nSe o fim de semana tem <span class="challenge-num">48 horas</span>,\nquantas horas ele estuda?',
-    answer: '12',
-    hint: 'Calma. Vai devagar.',
-    correct_trait: 'relampago',
-    wrong_trait: 'guerreiro',
-  },
-  // Q7 - Motivação
-  {
-    tag: '🚀 o que te move',
-    text: 'Qual frase mais combina com o seu momento?',
-    type: 'choice',
-    options: [
-      { letter:'A', emoji:'🏆', text:'"Eu vou passar. Não existe outra opção."', trait:'guerreiro' },
-      { letter:'B', emoji:'🗺️', text:'"Tenho um plano e só preciso executar."', trait:'estrategista' },
-      { letter:'C', emoji:'✨', text:'"Sei que consigo — só falta o método certo."', trait:'genio' },
-      { letter:'D', emoji:'🌱', text:'"Quero aprender de verdade, não só decorar."', trait:'criativo' },
-    ]
-  },
+const LVS=[{min:0,n:'Calouro',ic:'🌱'},{min:280,n:'Estudante',ic:'📚'},{min:520,n:'Dedicado',ic:'💪'},{min:760,n:'Fera',ic:'🔥'},{min:980,n:'Lendário',ic:'⭐'}];
+const gL=x=>{let l=LVS[0];for(const v of LVS)if(x>=v.min)l=v;return l};
+const ACS={F:{ic:'⚡',n:'Relâmpago'},C2:{ic:'🔥',n:'Em Chamas'},C3:{ic:'💥',n:'Imparável'},M:{ic:'🧮',n:'Calculista'},H:{ic:'🏅',n:'Na Metade'},D:{ic:'🏆',n:'Concluído'}};
+const FFS=[
+  {e:'⏰',t:'Estudar em blocos de 25min com pausa de 5 aumenta a retenção em até 40%.',s:'Técnica Pomodoro — Francesco Cirillo, 1980s'},
+  {e:'🧠',t:'O cérebro consolida memória enquanto você dorme. Estudar antes de dormir funciona de verdade.',s:'Nature Neuroscience, 2014'},
+  {e:'📚',t:'Tentar lembrar sem olhar é 2× mais eficaz do que reler o mesmo texto.',s:'Karpicke & Blunt — Science, 2011'},
+  {e:'🎯',t:'Quem define uma meta específica tem 42% mais chance de realizá-la.',s:'Gail Matthews — Dominican University, 2015'},
 ];
+const SFA=[2,5];
 
-/* ══════════════════════════
-   ARCHETYPES (personalidade)
-══════════════════════════ */
-const archetypes = {
-  guerreiro: {
-    icon:'⚔️', name:'O Guerreiro', teal:'Determinado',
-    tagline:'// garra de sobra. foco é o que falta.',
-    desc:'Você não tem problema com dedicação — você tem problema com direção. O Guerreiro Determinado estuda muito, mas às vezes no lugar errado. Com o método certo e acompanhamento semanal, essa energia toda vira resultado na prova.',
-    traits:['determinado','esforçado','precisa de método','nunca desiste'],
-  },
-  estrategista: {
-    icon:'♟️', name:'O Estrategista', teal:'Silencioso',
-    tagline:'// pensa antes de agir. sempre um passo à frente.',
-    desc:'Você já tem o mapa na cabeça — só falta quem ajude a executar semana a semana. O Estrategista Silencioso é o tipo de aluno que, com acompanhamento, vai mais longe do que imagina. Você só precisa de alguém que cuide dos detalhes enquanto você foca no grande quadro.',
-    traits:['planejador','metódico','autoconhecimento','focado'],
-  },
-  criativo: {
-    icon:'🎨', name:'A Mente', teal:'Criativa',
-    tagline:'// aprende diferente. ensino tradicional não foi feito pra você.',
-    desc:'Você não é difícil de ensinar — o problema é que quase ninguém ensina do seu jeito. A Mente Criativa precisa de analogias, histórias e conexões inesperadas. Uma aula que fala sua língua muda tudo.',
-    traits:['visual','aprende por analogias','pensa fora da caixa','curioso'],
-  },
-  relampago: {
-    icon:'⚡', name:'O Relâmpago', teal:'Oculto',
-    tagline:'// aprende rápido. quase não acredita no próprio talento.',
-    desc:'Você absorve conteúdo mais rápido do que o ritmo da sala permite. O Relâmpago Oculto precisa de desafio real — não de repetição. Com o nível certo de complexidade, você vai surpreender até você mesmo.',
-    traits:['aprende rápido','precisa de desafio','subestimado','potencial enorme'],
-  },
-  genio: {
-    icon:'🌟', name:'O Gênio', teal:'Adormecido',
-    tagline:'// potencial imenso. falta quem acenda a chama certa.',
-    desc:'Você entende tudo quando alguém explica bem. O problema? A maioria das aulas não explica bem. Você não é preguiçoso e nunca foi — você só nunca teve o professor certo. Isso muda agora.',
-    traits:['inteligente','precisa do professor certo','potencial latente','aprende rápido quando engajado'],
-  },
-  confiante: {
-    icon:'😎', name:'O Confiante', teal:'Desafiador',
-    tagline:'// relaxado. seguro. às vezes seguro demais.',
-    desc:'Sua autoconfiança é um ativo poderoso — mas às vezes ela te faz subestimar o que vem pela frente. O Confiante Desafiador aprende rápido quando o assunto prende. A chave é um professor que torne qualquer conteúdo impossível de ignorar.',
-    traits:['autoconfiante','aprende rápido','precisa de estímulo','resiliente'],
-  },
+// ══ 10 ARCHETYPES ══
+const AR={
+  guerreiro:{ic:'⚔️',nm:'O Guerreiro',tl:'Determinado',tg:'// garra de sobra. método é o que falta.',ds:'Você não tem problema com dedicação — tem problema com direção. O Guerreiro Determinado estuda muito, mas às vezes no lugar errado. Com o método certo e acompanhamento semanal, essa energia toda vira resultado concreto.',tr:['determinado','esforçado','precisa de método','nunca desiste'],cor:'#ef4444'},
+  estrategista:{ic:'♟️',nm:'O Estrategista',tl:'Silencioso',tg:'// pensa antes de agir. sempre um passo à frente.',ds:'Você já tem o mapa na cabeça — só falta quem ajude a executar semana a semana. Com acompanhamento certo, vai muito mais longe do que imagina.',tr:['planejador','metódico','autoconhecimento','focado'],cor:'#2d4653'},
+  criativo:{ic:'🎨',nm:'A Mente',tl:'Criativa',tg:'// aprende diferente. o ensino padrão não foi feito pra você.',ds:'Você não é difícil de ensinar — o problema é que quase ninguém ensina do seu jeito. Precisa de analogias, histórias e conexões inesperadas para tudo fazer sentido.',tr:['visual','aprende por analogias','pensa fora da caixa','curioso'],cor:'#a855f7'},
+  relampago:{ic:'⚡',nm:'O Relâmpago',tl:'Oculto',tg:'// aprende rápido. quase não acredita no próprio talento.',ds:'Você absorve conteúdo mais rápido do que o ritmo da sala permite. Precisa de desafio real — não de repetição. Com o nível certo de complexidade, vai surpreender até você mesmo.',tr:['aprende rápido','precisa de desafio','subestimado','potencial enorme'],cor:'#f59e0b'},
+  genio:{ic:'🌟',nm:'O Gênio',tl:'Adormecido',tg:'// potencial imenso. falta quem acenda a chama certa.',ds:'O Gênio Adormecido entende tudo quando alguém explica bem — o problema é que a maioria das aulas não explica bem. Você não é preguiçoso. Só nunca teve o professor certo.',tr:['inteligente','precisa do professor certo','potencial latente','engaja rápido'],cor:'#1cba9f'},
+  confiante:{ic:'😎',nm:'O Confiante',tl:'Desafiador',tg:'// relaxado. seguro. às vezes seguro demais.',ds:'Sua autoconfiança é um superpoder — mas às vezes faz você subestimar o que vem pela frente. Aprende rápido quando o assunto prende de verdade.',tr:['autoconfiante','aprende rápido','precisa de estímulo','resiliente'],cor:'#22c55e'},
+  maratonista:{ic:'🏃',nm:'O Maratonista',tl:'do Último Minuto',tg:'// funciona sob pressão. mas o coração agradece menos.',ds:'Você tem uma habilidade rara: seu cérebro ativa em modo turbo quando o prazo aperta. O Maratonista do Último Minuto produz muito em pouco tempo — mas ainda dá pra transformar esse talento em consistência.',tr:['funciona sob pressão','high performance','precisa de rotina','resiste bem ao estresse'],cor:'#ff8c42'},
+  perfeccionista:{ic:'🔬',nm:'O Perfeccionista',tl:'Travado',tg:'// faz tudo perfeito. até parar de fazer.',ds:'Você revisa o mesmo parágrafo quatro vezes. Já refez o cronograma de estudos três vezes esse mês. O Perfeccionista Travado tem altíssimo padrão — e isso é ótimo. Só precisa aprender que feito é melhor que perfeito.',tr:['alto padrão','analítico','trava na paralisia','muito detalhista'],cor:'#6366f1'},
+  social:{ic:'🤝',nm:'O Estudante',tl:'Social',tg:'// aprende em grupo. sozinho trava.',ds:'Você aprende explicando. Seu cérebro acende quando tem alguém pra trocar ideia. O Estudante Social precisa de grupos de estudo reais, debates e troca ativa — não de horas solitárias na frente do caderno.',tr:['aprende em grupo','comunicativo','precisa de troca','lidera naturalmente'],cor:'#ec4899'},
+  camaleao:{ic:'🦎',nm:'O Camaleão',tl:'Acadêmico',tg:'// se adapta a tudo. mas ainda não achou seu jeito.',ds:'Você já tentou várias formas de estudar — e nenhuma virou rotina. O Camaleão Acadêmico tem flexibilidade de sobra e adapta bem a qualquer ambiente. Só falta descobrir o método que é genuinamente seu.',tr:['adaptável','eclético','em busca do método','aberto a novas formas'],cor:'#14b8a6'},
 };
 
-/* ══════════════════════════
-   DESTINOS (recompensas)
-══════════════════════════ */
-const WA = '5527992886632';
-const destinations = {
-  ifes: {
-    color: '#4a9eff',
-    colorBg: '#edf5ff',
-    ebookEmoji: '🏛️',
-    ebookBg: 'linear-gradient(135deg,#4a9eff,#2563eb)',
-    label: 'Para quem quer o IF',
-    title: 'Guia de Estudos para o IFES',
-    sub: 'E-book gratuito · PDF',
-    desc: 'Estratégias específicas para a prova do Instituto Federal: as matérias que mais caem, como distribuir seu tempo, e o que realmente diferencia quem passa de quem quase passa.',
-    waMsg: 'Oi! Fiz o quiz da Um Quarto, descobri meu perfil e quero resgatar o Guia de Estudos para o IFES! 📚🏛️',
-    btnText: '📥 Resgatar o Guia do IFES no WhatsApp',
-    btnColor: '#4a9eff',
-    btnHover: '#2563eb',
-  },
-  enem: {
-    color: '#ff8c42',
-    colorBg: '#fff4ee',
-    ebookEmoji: '📝',
-    ebookBg: 'linear-gradient(135deg,#ff8c42,#ea580c)',
-    label: 'Para quem mira o ENEM',
-    title: 'Guia de Estudos para o ENEM',
-    sub: 'E-book gratuito · PDF',
-    desc: 'Do cronograma de 6 meses à redação nota 1000: um guia completo com o que estudar, quando estudar e como usar as provas anteriores como seu principal aliado.',
-    waMsg: 'Oi! Fiz o quiz da Um Quarto, descobri meu perfil e quero resgatar o Guia de Estudos para o ENEM! 📚📝',
-    btnText: '📥 Resgatar o Guia do ENEM no WhatsApp',
-    btnColor: '#ff8c42',
-    btnHover: '#ea580c',
-  },
-  escola: {
-    color: '#a855f7',
-    colorBg: '#f5f0ff',
-    ebookEmoji: '🎒',
-    ebookBg: 'linear-gradient(135deg,#a855f7,#7c3aed)',
-    label: 'Para arrasar na escola',
-    title: 'Guia de Organização dos Estudos e Concentração',
-    sub: 'E-book gratuito · PDF',
-    desc: 'Como criar uma rotina de estudos que funciona de verdade, técnicas de concentração comprovadas e como transformar a bagunça de matérias numa jornada com começo, meio e fim.',
-    waMsg: 'Oi! Fiz o quiz da Um Quarto, descobri meu perfil e quero resgatar o Guia de Organização dos Estudos e Concentração! 📚🎒',
-    btnText: '📥 Resgatar o Guia de Organização no WhatsApp',
-    btnColor: '#a855f7',
-    btnHover: '#7c3aed',
-  },
-  faculdade: {
-    color: '#22c55e',
-    colorBg: '#f0fdf4',
-    ebookEmoji: '🎓',
-    ebookBg: 'linear-gradient(135deg,#22c55e,#16a34a)',
-    label: 'Para o estudante universitário',
-    title: 'Guia do Estudante Universitário',
-    sub: 'E-book gratuito · PDF',
-    desc: 'Sobreviver à faculdade é uma coisa. Prosperar é outra. Este guia cobre gestão de tempo, como estudar para provas densas, TCC sem surto e como equilibrar tudo sem enlouquecer.',
-    waMsg: 'Oi! Fiz o quiz da Um Quarto, descobri meu perfil e quero resgatar o Guia do Estudante Universitário! 📚🎓',
-    btnText: '📥 Resgatar o Guia Universitário no WhatsApp',
-    btnColor: '#22c55e',
-    btnHover: '#16a34a',
-  },
-};
-
-/* ── STATE ── */
-let currentQ=0, traitCounts={}, destChoice=null;
-
-/* ── TYPEWRITER ── */
-function startExperience(){flash();showScreen('screen-typeintro');setTimeout(runTypewriter,400);}
-const typeLines=[
-  {text:'> iniciando sessão...',teal:false},
-  {text:'> sete perguntas. um perfil. um presente.',teal:true},
-  {text:'> seja honesto — o quiz sabe.',teal:false},
-  {text:'> preparado?',teal:true},
-];
-function runTypewriter(){
-  const display=document.getElementById('type-display');display.innerHTML='';
-  typeLines.forEach((line,i)=>{
-    setTimeout(()=>{
-      const div=document.createElement('div');div.style.opacity='0';div.style.transition='opacity .4s';
-      div.innerHTML=line.teal?`<span class="t-teal">${line.text}</span>`:`<span class="t-dim">${line.text.slice(0,2)}</span>${line.text.slice(2)}`;
-      display.appendChild(div);requestAnimationFrame(()=>div.style.opacity='1');
-    },i*600);
-  });
-  setTimeout(()=>{
-    document.getElementById('type-cursor').style.display='none';
-    flash();showScreen('screen-quiz');setTimeout(()=>loadQuestion(false),300);
-  },typeLines.length*600+900);
-}
-
-/* ── LOAD QUESTION ── */
-function loadQuestion(animate=true){
-  const q=questions[currentQ];
-  const card=document.getElementById('q-card');
-  document.querySelectorAll('.light-dot').forEach((l,i)=>l.classList.toggle('on',i<currentQ));
-  document.getElementById('q-num').textContent=`0${currentQ+1} / 07`;
-  if(animate) card.classList.add('out');
-  setTimeout(()=>{
-    card.classList.remove('out');
-    if(q.type==='choice'){
-      const isKey=q.isDestination;
-      card.innerHTML=`
-        ${isKey
-          ? `<div class="q-key-badge">⭐ pergunta decisiva</div>`
-          : `<div class="q-tag">${q.tag}</div>`
-        }
-        <div class="q-text">${q.text}</div>
-        <div class="q-options">
-          ${q.options.map(o=>`
-            <div class="q-opt${o.dest?' dest-'+o.dest:''}" onclick="handleChoice('${o.trait||''}','${o.dest||''}',event)">
-              <span class="opt-emoji">${o.emoji}</span>
-              <div class="opt-letter">${o.letter}</div>
-              <div class="opt-text">${o.text}</div>
-            </div>`).join('')}
-        </div>`;
-    } else {
-      card.innerHTML=`
-        <div class="q-tag">${q.tag}</div>
-        <div class="q-text">${q.text}</div>
-        <div class="q-challenge">${q.problem.replace(/\n/g,'<br>')}</div>
-        <div class="q-input-wrap">
-          <input class="q-input" id="challenge-input" type="text" placeholder="Sua resposta aqui..." autocomplete="off" spellcheck="false"/>
-          <button class="q-input-btn" onclick="handleChallenge()">→</button>
-        </div>
-        <div class="q-hint" id="challenge-hint">${q.hint}</div>`;
-      setTimeout(()=>{const inp=document.getElementById('challenge-input');if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')handleChallenge();});},100);
-    }
-    card.classList.add('in');setTimeout(()=>card.classList.remove('in'),500);
-    bindCursor();
-  },animate?300:0);
-}
-
-/* ── HANDLERS ── */
-function handleChoice(trait,dest,e){
-  const r=e.currentTarget.getBoundingClientRect();
-  spawnParticles(r.left+r.width/2,r.top+r.height/2,12);flash();
-  if(trait) traitCounts[trait]=(traitCounts[trait]||0)+1;
-  if(dest) destChoice=dest;
-  nextQuestion();
-}
-function handleChallenge(){
-  const input=document.getElementById('challenge-input');
-  const hint=document.getElementById('challenge-hint');
-  const q=questions[currentQ];
-  const val=input.value.trim().replace(',','.');
-  if(val===q.answer||val==='12h'||val.startsWith('12')){
-    hint.textContent='✓ Exato! 1/4 × 48 = 12h. Boa.';hint.className='q-hint right';
-    traitCounts[q.correct_trait]=(traitCounts[q.correct_trait]||0)+2;
-    flash();spawnParticles(window.innerWidth/2,window.innerHeight/2,20);
-    setTimeout(nextQuestion,900);
-  } else if(!val){
-    hint.textContent='⚠ Coloca uma resposta aí.';hint.className='q-hint wrong';
-  } else {
-    traitCounts[q.wrong_trait]=(traitCounts[q.wrong_trait]||0)+1;
-    hint.textContent='✗ Era 12 horas. Mas tudo bem — segue o jogo.';hint.className='q-hint wrong';
-    setTimeout(nextQuestion,1400);
+// Trait → archetype mapping
+function getArchetype(){
+  const sorted=Object.entries(trs).sort((a,b)=>b[1]-a[1]);
+  if(!sorted.length) return 'camaleao';
+  const top=sorted[0][0], topN=sorted[0][1];
+  const second=sorted[1]?.[0], secondN=sorted[1]?.[1]||0;
+  const tied=second && secondN>=topN-1;
+  // Special combos
+  if(tied){
+    if((top==='guerreiro'&&second==='criativo')||(top==='criativo'&&second==='guerreiro')) return 'maratonista';
+    if((top==='estrategista'&&second==='genio')||(top==='genio'&&second==='estrategista')) return 'perfeccionista';
+    if((top==='relampago'&&second==='confiante')||(top==='confiante'&&second==='relampago')) return 'social';
+    if((top==='criativo'&&second==='relampago')||(top==='relampago'&&second==='criativo')) return 'camaleao';
   }
-}
-function nextQuestion(){
-  currentQ++;
-  if(currentQ>=questions.length){
-    document.querySelectorAll('.light-dot').forEach(l=>l.classList.add('on'));
-    setTimeout(showTransition,500);
-  } else loadQuestion(true);
+  // All even / low scores
+  if(topN<=1) return 'camaleao';
+  return top in AR ? top : 'camaleao';
 }
 
-/* ── TRANSITION ── */
-function showTransition(){
-  flash();showScreen('screen-transition');
-  const bar=document.getElementById('loading-bar'),label=document.getElementById('trans-label');
-  const labels=['Analisando respostas','Revelando seu perfil','Escolhendo seu presente','Quase pronto...','Abrindo o quarto...'];
-  let pct=0,li=0;
-  const iv=setInterval(()=>{
-    pct+=Math.random()*9+3;if(pct>100)pct=100;
-    bar.style.width=pct+'%';
-    if(pct>(li+1)*20&&li<labels.length-1)label.textContent=labels[++li];
-    if(pct>=100){clearInterval(iv);setTimeout(showResult,700);}
-  },80);
-}
+// Questions
+const Qs=[
+  {tag:'🌙 situação real',txt:'São 23h da véspera da prova. Onde você está?',type:'c',opts:[{l:'A',e:'📅',t:'Montando cronograma — começo amanhã cedo',tr:'estrategista'},{l:'B',e:'🔥',t:'Estudando em pânico, com 7 abas abertas',tr:'guerreiro'},{l:'C',e:'😌',t:'Dormindo. A confiança faz parte do processo.',tr:'confiante'},{l:'D',e:'🎨',t:'Fazendo resumo colorido e caprichado',tr:'criativo'}]},
+  {tag:'😈 seu vilão',txt:'Qual desses te tira do foco em 30 segundos?',type:'c',opts:[{l:'A',e:'📱',t:'Uma notificação. Só uma. Acabou.',tr:'criativo'},{l:'B',e:'🛏️',t:'A cama me olha e eu já sei que perdi',tr:'genio'},{l:'C',e:'😤',t:'A sensação de que não está perfeito o suficiente',tr:'perfeccionista'},{l:'D',e:'🐇',t:'Organizar ao invés de estudar de verdade',tr:'estrategista'}]},
+  {tag:'💡 eureka!',txt:'Você entendeu algo difícil pela primeira vez. O que acontece?',type:'c',opts:[{l:'A',e:'🗣️',t:'Preciso explicar pra alguém AGORA',tr:'social'},{l:'B',e:'🎯',t:'Já calculo onde isso vai cair na prova',tr:'estrategista'},{l:'C',e:'⚡',t:'3 minutos de euforia irracional',tr:'relampago'},{l:'D',e:'😤',t:'Fico irritado — por que não aprendi antes?',tr:'genio'}]},
+  {tag:'⭐ pergunta decisiva',isDest:true,txt:'Qual é o seu objetivo agora?',type:'c',opts:[{l:'A',e:'🏛️',t:'Passar no IFES, CEFET ou instituto federal',d:'i',tr:'guerreiro'},{l:'B',e:'📝',t:'Me preparar pro ENEM e entrar numa federal',d:'e',tr:'estrategista'},{l:'C',e:'🎒',t:'Melhorar meu desempenho na escola — ENEM fica pra depois',d:'s',tr:'criativo'},{l:'D',e:'🎓',t:'Sobreviver (e prosperar) na faculdade',d:'fu',tr:'relampago'},{l:'E',e:'📋',t:'Já me formei — o foco agora é passar em concurso',d:'c',tr:'estrategista'}]},
+  {tag:'🦸 superpoder',txt:'Se você tivesse um superpoder de estudante, qual seria?',type:'c',opts:[{l:'A',e:'🧠',t:'Memorizar tudo na primeira leitura',tr:'relampago'},{l:'B',e:'⏰',t:'Nunca procrastinar — foco total',tr:'estrategista'},{l:'C',e:'🌀',t:'Entender qualquer explicação, por pior que seja',tr:'genio'},{l:'D',e:'🔋',t:'Estudar sem cansar por horas a fio',tr:'guerreiro'}]},
+  {tag:'🔢 desafio',txt:'Prove que você veio pra jogar.',type:'ch'},
+  {tag:'👥 como você estuda',txt:'Qual cenário te parece mais eficaz?',type:'c',opts:[{l:'A',e:'🌙',t:'Sozinho, de madrugada, no silêncio absoluto',tr:'criativo'},{l:'B',e:'👥',t:'Em grupo — a troca de ideias me faz aprender mais',tr:'social'},{l:'C',e:'⏱️',t:'Com timer e metas claras por sessão',tr:'estrategista'},{l:'D',e:'💥',t:'Intenso e concentrado quando o prazo aperta',tr:'maratonista'}]},
+  {tag:'🚀 o que te move',txt:'Qual frase combina mais com você agora?',type:'c',opts:[{l:'A',e:'🏆',t:'"Vou passar. Não existe outra opção."',tr:'guerreiro'},{l:'B',e:'🗺️',t:'"Tenho um plano. Só preciso executar."',tr:'estrategista'},{l:'C',e:'✨',t:'"Sei que consigo — só falta o método certo."',tr:'genio'},{l:'D',e:'🔬',t:'"Precisa estar perfeito antes de avançar."',tr:'perfeccionista'}]},
+];
 
-/* ── RESULT ── */
-function showResult(){
-  // Determine archetype
-  if(!destChoice) destChoice='enem'; // fallback
-  const top=Object.entries(traitCounts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'guerreiro';
-  const arch=archetypes[top];
-  const dest=destinations[destChoice];
-  const waLink=`https://wa.me/${WA}?text=${encodeURIComponent(dest.waMsg)}`;
+const WA='5527992886632';
+const DS={
+  i:{cl:'#4a9eff',bg:'linear-gradient(135deg,#4a9eff,#2563eb)',em:'🏛️',lb:'Para quem quer o IF',ti:'Guia de Estudos para o IFES',sb:'E-book gratuito · PDF',ds:'Baseado no edital oficial: o que mais cai, como distribuir o tempo e o que diferencia quem passa.',ms:'Oi! Fiz o quiz da Um Quarto e quero resgatar o Guia do IFES! 📚🏛️',bt:'📥 Resgatar o Guia do IFES no WhatsApp',bc:'#4a9eff',bh:'#2563eb'},
+  e:{cl:'#ff8c42',bg:'linear-gradient(135deg,#ff8c42,#ea580c)',em:'📝',lb:'Para quem mira o ENEM',ti:'Guia de Estudos para o ENEM',sb:'E-book gratuito · PDF',ds:'Do cronograma de 6 meses à redação nota 1000 — baseado na Matriz de Referência oficial do INEP.',ms:'Oi! Fiz o quiz da Um Quarto e quero resgatar o Guia do ENEM! 📚📝',bt:'📥 Resgatar o Guia do ENEM no WhatsApp',bc:'#ff8c42',bh:'#ea580c'},
+  s:{cl:'#a855f7',bg:'linear-gradient(135deg,#a855f7,#7c3aed)',em:'🎒',lb:'Para arrasar na escola',ti:'Guia de Organização dos Estudos',sb:'E-book gratuito · PDF',ds:'Técnicas de concentração comprovadas, rotina que funciona e como sair da bagunça de matérias.',ms:'Oi! Fiz o quiz da Um Quarto e quero resgatar o Guia de Organização! 📚🎒',bt:'📥 Resgatar o Guia no WhatsApp',bc:'#a855f7',bh:'#7c3aed'},
+  fu:{cl:'#22c55e',bg:'linear-gradient(135deg,#22c55e,#16a34a)',em:'🎓',lb:'Para o universitário',ti:'Guia do Estudante Universitário',sb:'E-book gratuito · PDF',ds:'Como prosperar — não apenas sobreviver — na faculdade. Estágio, TCC, network e saúde mental.',ms:'Oi! Fiz o quiz da Um Quarto e quero resgatar o Guia do Universitário! 📚🎓',bt:'📥 Resgatar o Guia no WhatsApp',bc:'#22c55e',bh:'#16a34a'},
+  c:{cl:'#f59e0b',bg:'linear-gradient(135deg,#f59e0b,#d97706)',em:'📋',lb:'Para o candidato a concurso',ti:'Guia do Candidato a Concurso',sb:'E-book gratuito · PDF',ds:'Método e consistência para a maratona do concurso — edital organizado, revisão e ritmo.',ms:'Oi! Fiz o quiz da Um Quarto e quero resgatar o Guia de Concurso! 📚📋',bt:'📥 Resgatar o Guia no WhatsApp',bc:'#f59e0b',bh:'#d97706'},
+};
 
-  flash();showScreen('screen-result');
-  document.getElementById('result-inner').innerHTML=`
-    <div class="result-eyebrow">// perfil revelado</div>
-    <span class="result-icon">${arch.icon}</span>
-    <div class="result-archetype">${arch.name} <span>${arch.teal}</span></div>
-    <div class="result-tagline">${arch.tagline}</div>
-    <div class="result-desc">${arch.desc}</div>
-    <div class="result-traits">${arch.traits.map(t=>`<span class="trait">${t}</span>`).join('')}</div>
+// TIMER
+function stT(){stpT();tL=15;qSt=Date.now();const ring=document.getElementById('tri'),num=document.getElementById('tn');tIv=setInterval(()=>{tL--;if(num)num.textContent=Math.max(0,tL);const p=tL/15;if(ring){ring.style.strokeDashoffset=100*(1-p);ring.style.stroke=p>.5?'#1cba9f':p>.25?'#f59e0b':'#ef4444'}if(tL<=0){stpT();combo=0;uC();nQ()}},1000)}
+function stpT(){clearInterval(tIv);const r=document.getElementById('tri');if(r)r.style.strokeDashoffset=0}
 
-    <div class="result-divider"><span>seu presente</span></div>
+// XP
+function aXP(amt,x,y,lbl){xp+=amt;const el=document.createElement('div');el.className='fxp'+(amt>=60?' g':'');el.textContent=lbl||`+${amt} XP`;el.style.left=(x||innerWidth/2)+'px';el.style.top=(y||innerHeight/2)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),860);document.getElementById('xbf').style.width=Math.min(100,(xp/1100)*100)+'%';animXP();sfx.x()}
+let xpAF=null;
+function animXP(){cancelAnimationFrame(xpAF);const el=document.getElementById('xpd');let d=parseInt(el.textContent)||0;const tgt=xp;function s(){d=Math.min(tgt,d+Math.ceil((tgt-d)/6)+1);el.textContent=d+' XP';if(d<tgt)xpAF=requestAnimationFrame(s)}s()}
+function uC(){const b=document.getElementById('cob');if(combo>=4){b.className='cob on c4';b.textContent=`💥 x${combo}`}else if(combo===3){b.className='cob on c3';b.textContent='💥 x3'}else if(combo===2){b.className='cob on c2';b.textContent='🔥 x2'}else b.className='cob';if(combo>mC)mC=combo}
+let aT=null;
+function ul(key){if(aG.has(key))return;aG.add(key);const a=ACS[key];aE.push(a);const t=document.getElementById('at');document.getElementById('ai').textContent=a.ic;document.getElementById('an').textContent=a.n;t.classList.add('show');sfx.a();clearTimeout(aT);aT=setTimeout(()=>t.classList.remove('show'),2600)}
 
-    <div class="ebook-card">
-      <div class="ebook-header">
-        <div class="ebook-cover" style="background:${dest.ebookBg}">${dest.ebookEmoji}</div>
-        <div class="ebook-info">
-          <div class="ebook-label" style="color:${dest.color}">${dest.label}</div>
-          <div class="ebook-title">${dest.title}</div>
-          <div class="ebook-sub">${dest.sub}</div>
-        </div>
+// FLOW
+function go(){sfx.c();fl();ss('sty');setTimeout(runTW,350)}
+const TLs=[{t:'> iniciando análise de perfil...',tl:false},{t:'> oito perguntas. dez perfis possíveis.',tl:true},{t:'> responda rápido — tem XP em jogo.',tl:false},{t:'> o quarto revela quem você é.',tl:true}];
+function runTW(){const d=document.getElementById('td');d.innerHTML='';TLs.forEach((line,i)=>{setTimeout(()=>{const div=document.createElement('div');div.style.opacity='0';div.style.transition='opacity .4s';div.innerHTML=line.tl?`<span class="tcl2">${line.t}</span>`:`<span class="tdm">${line.t.slice(0,2)}</span>${line.t.slice(2)}`;d.appendChild(div);requestAnimationFrame(()=>div.style.opacity='1');if(i<2)tn(440+i*80,.06,'sine',.07)},i*540)});setTimeout(()=>{document.getElementById('tycu').style.display='none';fl();ss('sq');setTimeout(()=>lQ(false),300)},TLs.length*540+680)}
+function lQ(animate=true){const q=Qs[cQ];const card=document.getElementById('qcd');if(animate)card.classList.add('out');setTimeout(()=>{card.classList.remove('out');let h='';const n=cQ+1;if(q.isDest)h+=`<div class="qtag dt">⭐ pergunta decisiva · ${n}/8</div>`;else h+=`<div class="qtag">${q.tag} · ${n}/8</div>`;h+=`<div class="qtxt">${q.txt}</div>`;if(q.type==='c'){h+='<div class="qopts">';q.opts.forEach(o=>{const dc=o.d?` d${o.d}`:'';h+=`<div class="qo${dc}" onclick="pk('${o.tr||''}','${o.d||''}',event)"><span class="oe">${o.e}</span><div class="ol">${o.l}</div><div class="ot">${o.t}</div></div>`});h+='</div>'}else{h+=`<div class="qch">Um aluno estuda <span class="cn">1/4</span> do dia nos fins de semana.<br><br>Se o fim de semana tem <span class="cn">48 horas</span>, quantas horas ele estuda?</div><div class="qiw"><input class="qin" id="qi" type="text" placeholder="Resposta em horas..." autocomplete="off" spellcheck="false"/><button class="qib" onclick="chk()">→</button></div><div class="qhn" id="qh">Vai devagar. Pensa com calma.</div>`}card.innerHTML=h;card.classList.add('in');setTimeout(()=>card.classList.remove('in'),500);bc();document.querySelectorAll('.qo').forEach(el=>{el.addEventListener('mouseenter',()=>cur.classList.add('big'));el.addEventListener('mouseleave',()=>cur.classList.remove('big'))});if(q.type==='c')stT();qSt=Date.now();const inp=document.getElementById('qi');if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')chk()})}if(cQ===4)ul('H')},animate?270:0)}
+function pk(trait,d,e){stpT();sfx.c();const el=(Date.now()-qSt)/1000;const r=e.currentTarget.getBoundingClientRect();const cx2=r.left+r.width/2,cy2=r.top+r.height/2;sp(cx2,cy2,14,'28,186,159');fl();let amt=100,lbl=`+100 XP`;if(el<3){amt+=60;lbl=`⚡ +${amt} XP RÁPIDO!`;combo++;ul('F')}else if(el<7){amt+=30;lbl=`+${amt} XP`;combo++}else{combo=0}if(combo>=2){amt+=35*(combo-1);lbl=`💥 COMBO x${combo}! +${amt} XP`;sfx.co();if(combo===2)ul('C2');if(combo===3)ul('C3')}uC();aXP(amt,cx2,cy2-32,lbl);if(trait)trs[trait]=(trs[trait]||0)+1;if(d)dst=d;mFF()}
+function chk(){const inp=document.getElementById('qi'),hint=document.getElementById('qh');const v=inp.value.trim().replace(',','.');stpT();if(v==='12'||v==='12h'||v.startsWith('12')){hint.textContent='✓ Exato! 1/4 × 48 = 12h.';hint.className='qhn ok';trs['relampago']=(trs['relampago']||0)+2;aXP(150,innerWidth/2,innerHeight/2,'🧮 +150 XP GÊNIO!');combo++;uC();ul('M');sp(innerWidth/2,innerHeight/2,26,'28,186,159');fl();setTimeout(mFF,900)}else if(!v){hint.textContent='⚠ Escreve alguma coisa aí.';hint.className='qhn wr';stT()}else{sfx.w();trs['guerreiro']=(trs['guerreiro']||0)+1;aXP(30,innerWidth/2,innerHeight/2,'+30 XP');hint.textContent='✗ Era 12 horas. 1/4 × 48 = 12. Bora!';hint.className='qhn wr';combo=0;uC();setTimeout(mFF,1300)}}
+function mFF(){if(SFA.includes(cQ)&&fI<FFS.length){const f=FFS[fI++];document.getElementById('ffe').textContent=f.e;document.getElementById('fft').textContent=f.t;document.getElementById('ffs').textContent=f.s;cQ++;rFF=true;sfx.ff();ss('sff')}else nQ()}
+function rq(){sfx.c();fl();if(rFF){rFF=false;if(cQ>=Qs.length){shTr();return}ss('sq');setTimeout(()=>lQ(true),300)}else nQ()}
+function nQ(){cQ++;if(cQ>=Qs.length){ul('D');setTimeout(shTr,400)}else{ss('sq');setTimeout(()=>lQ(true),300)}}
+function shTr(){stpT();fl();ss('str');const bar=document.getElementById('lb'),lbl=document.getElementById('trl');const labs=['Analisando respostas','Calculando perfil...','Cruzando dados','Revelando arquétipo','Abrindo o quarto...'];let pct=0,li=0;const iv=setInterval(()=>{pct+=Math.random()*9+3;if(pct>100)pct=100;bar.style.width=pct+'%';if(pct>(li+1)*20&&li<labs.length-1)lbl.textContent=labs[++li];if(pct>=100){clearInterval(iv);setTimeout(shRe,700)}},80)}
+
+// RESULT
+function shRe(){
+  if(!dst)dst='e';
+  const archKey=getArchetype();
+  const arch=AR[archKey];
+  const d=DS[dst];
+  const lv=gL(xp);
+  currentArch=arch; currentDest=d; currentLv=lv;
+  const waLink=`https://wa.me/${WA}?text=${encodeURIComponent(d.ms)}`;
+  sfx.r();fl();ss('sre');lConf();
+  const achHTML=aE.length?`<div class="astr">${aE.map(a=>`<div class="ae"><span class="aei">${a.ic}</span><span class="aen">${a.n}</span></div>`).join('')}</div>`:'';
+  document.getElementById('ri').innerHTML=`
+    <div class="rew">// perfil revelado · ${Object.keys(AR).indexOf(archKey)+1} de 10</div>
+    <div class="rlb">${lv.ic} ${lv.n}<span class="rxpl">(${xp} XP)</span></div>
+    <span class="ric">${arch.ic}</span>
+    <div class="rar">${arch.nm} <span>${arch.tl}</span></div>
+    <div class="rtg">${arch.tg}</div>
+    <div class="stk">
+      <div class="ski"><span class="skn" id="rxp">0</span><span class="skl">XP total</span></div>
+      <div class="ski"><span class="skn">${aE.length}</span><span class="skl">conquistas</span></div>
+      <div class="ski"><span class="skn">${mC>0?'x'+mC:'—'}</span><span class="skl">maior combo</span></div>
+    </div>
+    ${achHTML}
+    <div class="rdsc">${arch.ds}</div>
+    <div class="rtr">${arch.tr.map(t=>`<span class="trait">${t}</span>`).join('')}</div>
+    <div class="rof">
+      <div class="ol2">🎁 seu presente personalizado</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="width:46px;height:58px;border-radius:6px;background:${d.bg};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.12)">${d.em}</div>
+        <div><div class="ol2" style="color:${d.cl}">${d.lb}</div><div class="oti">${d.ti}</div><div style="font-size:.72rem;color:var(--g)">${d.sb}</div></div>
       </div>
-      <div class="ebook-body">
-        <div class="ebook-desc">${dest.desc}</div>
-        <a href="${waLink}" target="_blank" class="btn-claim" style="background:${dest.color};" onmouseover="this.style.background='${dest.btnHover}'" onmouseout="this.style.background='${dest.color}'">${dest.btnText}</a>
+      <div class="od">${d.ds}</div>
+      <a href="${waLink}" target="_blank" class="bca" style="background:${d.bc}" onmouseover="this.style.background='${d.bh}'" onmouseout="this.style.background='${d.bc}'">${d.bt}</a>
+      <div class="share-section">
+        <button class="bsh" onclick="openCardModal()">📸 Gerar cartão do perfil</button>
+        <button class="bsh" onclick="shr()">📤 Compartilhar resultado</button>
       </div>
     </div>
-
-    <button class="btn-restart" onclick="restartQuiz()">↻ Refazer o quiz</button>`;
-
-  for(let i=0;i<4;i++) setTimeout(()=>spawnParticles(window.innerWidth/2,window.innerHeight*.3,16),i*180);
-  bindCursor();
+    <button class="brs" onclick="rst()">↻ Refazer o quiz</button>`;
+  let disp=0;const rxp=document.getElementById('rxp');const iv=setInterval(()=>{disp=Math.min(xp,disp+Math.ceil((xp-disp)/8)+2);if(rxp)rxp.textContent=disp;if(disp>=xp)clearInterval(iv)},28);
+  bc();
 }
 
-/* ── RESTART ── */
-function restartQuiz(){
-  currentQ=0;traitCounts={};destChoice=null;
-  const panel=document.getElementById('door-panel');
-  panel.classList.remove('open');flash();
-  showScreen('screen-intro');
-  setTimeout(()=>panel.classList.add('open'),1100);
+// SHARE CARD (Canvas)
+function drawCard(){
+  const canvas=document.getElementById('preview-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=540,H=300;
+  canvas.width=W; canvas.height=H;
+  const arch=currentArch, lv=currentLv;
+  if(!arch||!lv) return;
+  // Background
+  const grd=ctx.createLinearGradient(0,0,W,H);
+  grd.addColorStop(0,'#1e3040');
+  grd.addColorStop(1,'#2d4653');
+  ctx.fillStyle=grd;
+  ctx.fillRect(0,0,W,H);
+  // Accent circles (use globalAlpha instead of hex alpha)
+  ctx.globalAlpha=0.13;
+  ctx.fillStyle=arch.cor;
+  ctx.beginPath(); ctx.arc(W+60,H/2,180,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=0.09;
+  ctx.beginPath(); ctx.arc(W+60,H/2,130,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=1;
+  // Left accent bar
+  ctx.fillStyle=arch.cor;
+  ctx.fillRect(0,0,4,H);
+  // Logo
+  ctx.fillStyle='#1cba9f';
+  ctx.font='bold 11px sans-serif';
+  ctx.fillText('UM QUARTO',28,32);
+  // Profile badge
+  const archIdx=Object.keys(AR).indexOf(Object.keys(AR).find(k=>AR[k]===arch))+1;
+  ctx.globalAlpha=0.25; ctx.fillStyle=arch.cor;
+  roundRectFill(ctx,24,42,100,22,11);
+  ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
+  ctx.font='bold 9px sans-serif';
+  ctx.fillText('PERFIL '+archIdx+' DE 10',34,57);
+  // Icon
+  ctx.font='60px serif';
+  ctx.fillText(arch.ic,26,140);
+  // Name
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 26px sans-serif';
+  ctx.fillText(arch.nm,28,173);
+  // Teal word
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 22px sans-serif';
+  ctx.fillText(arch.tl,28,200);
+  // Tagline
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.font='10px monospace';
+  ctx.fillText(arch.tg,28,220);
+  // Traits
+  let tx=28;
+  arch.tr.slice(0,3).forEach(t=>{
+    ctx.font='9.5px sans-serif';
+    const tw=ctx.measureText(t).width;
+    const pw=tw+16;
+    ctx.globalAlpha=0.2; ctx.fillStyle=arch.cor;
+    roundRectFill(ctx,tx,248,pw,19,9);
+    ctx.globalAlpha=1; ctx.fillStyle=arch.cor;
+    ctx.fillText(t,tx+8,261);
+    tx+=pw+7;
+  });
+  // Right: XP
+  ctx.textAlign='right';
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='bold 13px sans-serif';
+  ctx.fillText(lv.ic+' '+lv.n,W-28,48);
+  ctx.fillStyle=arch.cor;
+  ctx.font='bold 30px sans-serif';
+  ctx.fillText(xp+' XP',W-28,86);
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.font='9px monospace';
+  ctx.fillText('pontos acumulados',W-28,103);
+  // Divider
+  ctx.globalAlpha=0.12; ctx.strokeStyle='#fff'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(W-155,120); ctx.lineTo(W-28,120); ctx.stroke();
+  ctx.globalAlpha=1;
+  // Combo + conquistas
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='bold 20px sans-serif';
+  ctx.fillText(mC>0?'x'+mC:'—',W-95,155);
+  ctx.fillText(aE.length,W-28,155);
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.font='9px monospace';
+  ctx.fillText('maior combo',W-95,170);
+  ctx.fillText('conquistas',W-28,170);
+  // Watermark
+  ctx.textAlign='left';
+  ctx.globalAlpha=0.22; ctx.fillStyle='#fff';
+  ctx.font='8px sans-serif';
+  ctx.fillText('umquarto.com.br  |  (27) 99288-6632',28,H-12);
+  ctx.textAlign='right';
+  ctx.fillText('Descubra tambem o seu perfil',W-28,H-12);
+  ctx.globalAlpha=1;
 }
+function roundRectFill(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();ctx.fill();
+}
+
+function openCardModal(){
+  if(!currentArch||!currentLv){alert('Termine o quiz primeiro!');return;}
+  sfx.c();drawCard();
+  document.getElementById('card-modal').classList.add('show');
+  bc();
+}
+function closeCardModal(){document.getElementById('card-modal').classList.remove('show')}
+
+function downloadCard(){
+  try {
+    const canvas=document.getElementById('preview-canvas');
+    const name='meu-perfil-'+(currentArch?currentArch.nm.replace(/\s+/g,'-').toLowerCase():'umquarto')+'.png';
+    const dataURL=canvas.toDataURL('image/png');
+    const link=document.createElement('a');
+    link.download=name;
+    link.href=dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    sfx.a();
+    const btn=document.querySelector('.btn-download');
+    if(btn){btn.textContent='✓ Baixando...';setTimeout(()=>btn.textContent='⬇️ Baixar imagem',2000);}
+  } catch(e){
+    alert('Erro ao baixar. Tente clicar com botão direito na imagem e salvar.');
+  }
+}
+
+function shr(){
+  sfx.c();
+  if(!currentArch||!currentLv) return;
+  const txt='Fiz o quiz da Um Quarto e sou "'+currentArch.nm+' '+currentArch.tl+'" '+currentArch.ic+'\nNivel '+currentLv.n+' com '+xp+' XP!\n\nDescubra o seu: umquarto.com.br';
+  const btns=[...document.querySelectorAll('.bsh')];
+  const sharBtn=btns.find(b=>b.textContent.includes('Compartilhar'));
+  if(navigator.share){
+    navigator.share({title:'Meu perfil — Um Quarto',text:txt})
+      .then(()=>{if(sharBtn){sharBtn.textContent='✓ Compartilhado!';setTimeout(()=>sharBtn.textContent='📤 Compartilhar resultado',2500);}})
+      .catch(()=>copyFallback(txt,sharBtn));
+  } else {
+    copyFallback(txt,sharBtn);
+  }
+}
+function copyFallback(txt,btn){
+  // Try modern clipboard API
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>showCopied(btn)).catch(()=>execCopy(txt,btn));
+  } else {
+    execCopy(txt,btn);
+  }
+}
+function execCopy(txt,btn){
+  // Legacy execCommand fallback (works on file://)
+  const ta=document.createElement('textarea');
+  ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');showCopied(btn);}catch(e){alert('Texto copiado:\n\n'+txt);}
+  document.body.removeChild(ta);
+}
+function showCopied(btn){
+  if(btn){btn.textContent='✓ Texto copiado!';setTimeout(()=>btn.textContent='📤 Compartilhar resultado',2500);}
+}
+
+function rst(){cQ=0;trs={};dst=null;xp=0;combo=0;fI=0;rFF=false;aE=[];aG=new Set();mC=0;currentArch=null;currentDest=null;currentLv=null;document.getElementById('xpd').textContent='0 XP';document.getElementById('xbf').style.width='0%';document.getElementById('cob').className='cob';stpT();const dp=document.getElementById('dp');dp.classList.remove('open');fl();ss('si');setTimeout(()=>dp.classList.add('open'),1100);cfs=[];cx.clearRect(0,0,cfc.width,cfc.height)}
 </script>
 </body>
 </html>
