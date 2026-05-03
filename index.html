@@ -89,11 +89,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--i);cursor
 .ol{width:25px;height:25px;border-radius:6px;border:1.5px solid var(--bt);color:var(--t);font-family:'DM Mono',monospace;font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;background:var(--td)}
 .qo:hover .ol{background:var(--t);color:#fff;border-color:var(--t)}
 .ot{font-size:.86rem;color:var(--n);line-height:1.4;position:relative;z-index:1}
-.qo.di:hover{border-color:#4a9eff;background:#f0f7ff}.qo.di:hover .ol{background:#4a9eff;color:#fff;border-color:#4a9eff}
-.qo.de:hover{border-color:#ff8c42;background:#fff8f3}.qo.de:hover .ol{background:#ff8c42;color:#fff;border-color:#ff8c42}
-.qo.ds:hover{border-color:#a855f7;background:#faf5ff}.qo.ds:hover .ol{background:#a855f7;color:#fff;border-color:#a855f7}
-.qo.dfu:hover{border-color:#22c55e;background:#f0fdf4}.qo.dfu:hover .ol{background:#22c55e;color:#fff;border-color:#22c55e}
-.qo.dc:hover{border-color:#f59e0b;background:#fffbeb}.qo.dc:hover .ol{background:#f59e0b;color:#fff;border-color:#f59e0b}
+.qo.dopt-i:hover{border-color:#4a9eff;background:#f0f7ff}.qo.dopt-i:hover .ol{background:#4a9eff;color:#fff;border-color:#4a9eff}
+.qo.dopt-e:hover{border-color:#ff8c42;background:#fff8f3}.qo.dopt-e:hover .ol{background:#ff8c42;color:#fff;border-color:#ff8c42}
+.qo.dopt-s:hover{border-color:#a855f7;background:#faf5ff}.qo.dopt-s:hover .ol{background:#a855f7;color:#fff;border-color:#a855f7}
+.qo.dopt-fu:hover{border-color:#22c55e;background:#f0fdf4}.qo.dopt-fu:hover .ol{background:#22c55e;color:#fff;border-color:#22c55e}
+.qo.dopt-c:hover{border-color:#f59e0b;background:#fffbeb}.qo.dopt-c:hover .ol{background:#f59e0b;color:#fff;border-color:#f59e0b}
 .qch{font-family:'DM Mono',monospace;font-size:clamp(.8rem,2vw,.9rem);color:var(--n);background:var(--s);border:1.5px solid var(--bt);padding:18px 22px;border-radius:12px;margin-bottom:14px;text-align:left;line-height:2;box-shadow:0 4px 14px rgba(28,186,159,.06)}
 .cn{color:var(--t)}
 .qiw{display:flex;gap:9px;width:100%}
@@ -412,7 +412,7 @@ function ul(key){if(aG.has(key))return;aG.add(key);const a=ACS[key];aE.push(a);c
 function go(){sfx.c();fl();ss('sty');setTimeout(runTW,350)}
 const TLs=[{t:'> iniciando análise de perfil...',tl:false},{t:'> oito perguntas. dez perfis possíveis.',tl:true},{t:'> responda rápido — tem XP em jogo.',tl:false},{t:'> o quarto revela quem você é.',tl:true}];
 function runTW(){const d=document.getElementById('td');d.innerHTML='';TLs.forEach((line,i)=>{setTimeout(()=>{const div=document.createElement('div');div.style.opacity='0';div.style.transition='opacity .4s';div.innerHTML=line.tl?`<span class="tcl2">${line.t}</span>`:`<span class="tdm">${line.t.slice(0,2)}</span>${line.t.slice(2)}`;d.appendChild(div);requestAnimationFrame(()=>div.style.opacity='1');if(i<2)tn(440+i*80,.06,'sine',.07)},i*540)});setTimeout(()=>{document.getElementById('tycu').style.display='none';fl();ss('sq');setTimeout(()=>lQ(false),300)},TLs.length*540+680)}
-function lQ(animate=true){const q=Qs[cQ];const card=document.getElementById('qcd');if(animate)card.classList.add('out');setTimeout(()=>{card.classList.remove('out');let h='';const n=cQ+1;if(q.isDest)h+=`<div class="qtag dt">⭐ pergunta decisiva · ${n}/8</div>`;else h+=`<div class="qtag">${q.tag} · ${n}/8</div>`;h+=`<div class="qtxt">${q.txt}</div>`;if(q.type==='c'){h+='<div class="qopts">';q.opts.forEach(o=>{const dc=o.d?` d${o.d}`:'';h+=`<div class="qo${dc}" onclick="pk('${o.tr||''}','${o.d||''}',event)"><span class="oe">${o.e}</span><div class="ol">${o.l}</div><div class="ot">${o.t}</div></div>`});h+='</div>'}else{h+=`<div class="qch">Um aluno estuda <span class="cn">1/4</span> do dia nos fins de semana.<br><br>Se o fim de semana tem <span class="cn">48 horas</span>, quantas horas ele estuda?</div><div class="qiw"><input class="qin" id="qi" type="text" placeholder="Resposta em horas..." autocomplete="off" spellcheck="false"/><button class="qib" onclick="chk()">→</button></div><div class="qhn" id="qh">Vai devagar. Pensa com calma.</div>`}card.innerHTML=h;card.classList.add('in');setTimeout(()=>card.classList.remove('in'),500);bc();document.querySelectorAll('.qo').forEach(el=>{el.addEventListener('mouseenter',()=>cur.classList.add('big'));el.addEventListener('mouseleave',()=>cur.classList.remove('big'))});if(q.type==='c')stT();qSt=Date.now();const inp=document.getElementById('qi');if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')chk()})}if(cQ===4)ul('H')},animate?270:0)}
+function lQ(animate=true){const q=Qs[cQ];const card=document.getElementById('qcd');if(animate)card.classList.add('out');setTimeout(()=>{card.classList.remove('out');let h='';const n=cQ+1;if(q.isDest)h+=`<div class="qtag dt">⭐ pergunta decisiva · ${n}/8</div>`;else h+=`<div class="qtag">${q.tag} · ${n}/8</div>`;h+=`<div class="qtxt">${q.txt}</div>`;if(q.type==='c'){h+='<div class="qopts">';q.opts.forEach(o=>{const dc=o.d?' dopt-'+o.d:'';h+=`<div class="qo${dc}" onclick="pk('${o.tr||''}','${o.d||''}',event)"><span class="oe">${o.e}</span><div class="ol">${o.l}</div><div class="ot">${o.t}</div></div>`});h+='</div>'}else{h+=`<div class="qch">Um aluno estuda <span class="cn">1/4</span> do dia nos fins de semana.<br><br>Se o fim de semana tem <span class="cn">48 horas</span>, quantas horas ele estuda?</div><div class="qiw"><input class="qin" id="qi" type="text" placeholder="Resposta em horas..." autocomplete="off" spellcheck="false"/><button class="qib" onclick="chk()">→</button></div><div class="qhn" id="qh">Vai devagar. Pensa com calma.</div>`}card.innerHTML=h;card.classList.add('in');setTimeout(()=>card.classList.remove('in'),500);bc();document.querySelectorAll('.qo').forEach(el=>{el.addEventListener('mouseenter',()=>cur.classList.add('big'));el.addEventListener('mouseleave',()=>cur.classList.remove('big'))});if(q.type==='c')stT();qSt=Date.now();const inp=document.getElementById('qi');if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')chk()})}if(cQ===4)ul('H')},animate?270:0)}
 function pk(trait,d,e){stpT();sfx.c();const el=(Date.now()-qSt)/1000;const r=e.currentTarget.getBoundingClientRect();const cx2=r.left+r.width/2,cy2=r.top+r.height/2;sp(cx2,cy2,14,'28,186,159');fl();let amt=100,lbl=`+100 XP`;if(el<3){amt+=60;lbl=`⚡ +${amt} XP RÁPIDO!`;combo++;ul('F')}else if(el<7){amt+=30;lbl=`+${amt} XP`;combo++}else{combo=0}if(combo>=2){amt+=35*(combo-1);lbl=`💥 COMBO x${combo}! +${amt} XP`;sfx.co();if(combo===2)ul('C2');if(combo===3)ul('C3')}uC();aXP(amt,cx2,cy2-32,lbl);if(trait)trs[trait]=(trs[trait]||0)+1;if(d)dst=d;mFF()}
 function chk(){const inp=document.getElementById('qi'),hint=document.getElementById('qh');const v=inp.value.trim().replace(',','.');stpT();if(v==='12'||v==='12h'||v.startsWith('12')){hint.textContent='✓ Exato! 1/4 × 48 = 12h.';hint.className='qhn ok';trs['relampago']=(trs['relampago']||0)+2;aXP(150,innerWidth/2,innerHeight/2,'🧮 +150 XP GÊNIO!');combo++;uC();ul('M');sp(innerWidth/2,innerHeight/2,26,'28,186,159');fl();setTimeout(mFF,900)}else if(!v){hint.textContent='⚠ Escreve alguma coisa aí.';hint.className='qhn wr';stT()}else{sfx.w();trs['guerreiro']=(trs['guerreiro']||0)+1;aXP(30,innerWidth/2,innerHeight/2,'+30 XP');hint.textContent='✗ Era 12 horas. 1/4 × 48 = 12. Bora!';hint.className='qhn wr';combo=0;uC();setTimeout(mFF,1300)}}
 function mFF(){if(SFA.includes(cQ)&&fI<FFS.length){const f=FFS[fI++];document.getElementById('ffe').textContent=f.e;document.getElementById('fft').textContent=f.t;document.getElementById('ffs').textContent=f.s;cQ++;rFF=true;sfx.ff();ss('sff')}else nQ()}
@@ -618,6 +618,14 @@ function drawCard(){
   ctx.globalAlpha=1;
 }
 
+function roundRectFill(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();ctx.fill();
+}
 function wrapText(ctx,text,x,y,maxW,lineH){
   const words=text.split(' ');
   let line='';
